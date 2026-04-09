@@ -15,7 +15,6 @@ interface ArticleContent {
   paragraphs: string[];
   sourceName: string;
   sourceUrl: string;
-  glowId: "red" | "orange" | "yellow" | "blue" | "green" | "none";
 }
 
 const articlesData: Record<string, ArticleContent> = {
@@ -24,7 +23,6 @@ const articlesData: Record<string, ArticleContent> = {
     title: "70% of Two-Wheeler Fatalities Involve Helmet Negligence",
     color: "red-500",
     icon: "Activity",
-    glowId: "none",
     paragraphs: [
       "Motorcycles and two-wheelers provide efficient transportation for millions globally, but they expose riders to significantly higher risks than enclosed vehicles. Because motorcycles lack a structural frame protecting the rider, the physical force of a crash is absorbed entirely by the rider's body.",
       "According to extensive research conducted by the World Health Organization (WHO) and regional transport ministries, a staggering 70% of fatalities or severe traumatic brain injuries in two-wheeler crashes involve victims who were either not wearing a helmet or wearing one improperly (unstrapped or non-standard). Head injuries are the leading cause of death and major morbidity among motorcyclists.",
@@ -39,7 +37,6 @@ const articlesData: Record<string, ArticleContent> = {
     title: "1.5 Million Annual Road Accidents",
     color: "orange-500",
     icon: "Shield",
-    glowId: "none",
     paragraphs: [
       "The global road safety crisis is one of the most pressing public health emergencies of our time. Data from the World Health Organization indicates that approximately 1.19 million to 1.5 million people die each year as a result of road traffic crashes.",
       "A significant portion of these devastating accidents is directly attributed to human rule-breaking: over-speeding, driving under the influence, ignoring traffic signals, and failing to use motorcycle helmets or seat-belts.",
@@ -54,7 +51,6 @@ const articlesData: Record<string, ArticleContent> = {
     title: "The Bottleneck of Manual Enforcement",
     color: "yellow-500",
     icon: "Bell",
-    glowId: "none",
     paragraphs: [
       "Traditional manual traffic enforcement relies entirely on physical police presence at intersections. This approach is intrinsically flawed and highly inefficient due to human limitations, fatigue, and the sheer volume of modern traffic.",
       "Traffic police cannot supervise every lane 24/7. Rule violators quickly learn the exact locations and schedules of manual checkpoints, slowing down only when visible enforcement is present, and resuming dangerous behavior immediately after.",
@@ -147,7 +143,7 @@ export default function ArticlePage() {
            animate={{ opacity: 1 }}
            transition={{ delay: 0.3 }}
         >
-          <Card glow={article.glowId} className="p-8 bg-[#0a0a0a]/80 backdrop-blur-md border border-gray-800">
+          <Card glow="none" className="p-8 bg-[#0a0a0a]/80 backdrop-blur-md border border-gray-800">
              <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 border-b border-gray-800 pb-4">
                Research & Sources
              </h3>
