@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Home() {
   const router = useRouter();
@@ -158,27 +159,42 @@ export default function Home() {
            className="grid md:grid-cols-3 gap-8"
         >
           <motion.div variants={scrollVariants}>
-            <Card glow="none" className="h-full flex flex-col items-center text-center p-8 border-red-500/20 bg-red-500/5 hover:bg-red-500/10 transition-colors duration-300">
-              <Activity className="w-12 h-12 text-red-500 mb-6 drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
-              <h3 className="text-5xl font-black text-white mb-2">70%</h3>
-              <p className="text-gray-400">Two-wheeler fatalities involve helmet negligence</p>
-            </Card>
+            <Link href="/articles/helmet-negligence" className="group block h-full">
+              <Card glow="none" className="h-full flex flex-col items-center text-center p-8 border-red-500/20 bg-red-500/5 hover:bg-red-500/20 hover:border-red-500/50 transition-all duration-500 relative overflow-hidden">
+                <Activity className="w-12 h-12 text-red-500 mb-6 drop-shadow-[0_0_10px_rgba(239,68,68,0.5)] group-hover:scale-110 transition-transform duration-500" />
+                <h3 className="text-5xl font-black text-white mb-2">70%</h3>
+                <p className="text-gray-400 mb-6">Two-wheeler fatalities involve helmet negligence</p>
+                <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-red-400 font-bold text-sm">
+                   Read Research <ArrowRight className="w-4 h-4 ml-2" />
+                </div>
+              </Card>
+            </Link>
           </motion.div>
 
           <motion.div variants={scrollVariants}>
-            <Card glow="none" className="h-full flex flex-col items-center text-center p-8 border-orange-500/20 bg-orange-500/5 hover:bg-orange-500/10 transition-colors duration-300">
-               <Shield className="w-12 h-12 text-orange-500 mb-6 drop-shadow-[0_0_10px_rgba(249,115,22,0.5)]" />
-              <h3 className="text-5xl font-black text-white mb-2">1.5M+</h3>
-              <p className="text-gray-400">Annual road accidents globally primarily due to rule breaking</p>
-            </Card>
+             <Link href="/articles/accident-statistics" className="group block h-full">
+              <Card glow="none" className="h-full flex flex-col items-center text-center p-8 border-orange-500/20 bg-orange-500/5 hover:bg-orange-500/20 hover:border-orange-500/50 transition-all duration-500 relative overflow-hidden">
+                 <Shield className="w-12 h-12 text-orange-500 mb-6 drop-shadow-[0_0_10px_rgba(249,115,22,0.5)] group-hover:scale-110 transition-transform duration-500" />
+                <h3 className="text-5xl font-black text-white mb-2">1.5M+</h3>
+                <p className="text-gray-400 mb-6">Annual road accidents globally primarily due to rule breaking</p>
+                <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-orange-400 font-bold text-sm">
+                   Read Research <ArrowRight className="w-4 h-4 ml-2" />
+                </div>
+              </Card>
+             </Link>
           </motion.div>
 
           <motion.div variants={scrollVariants}>
-             <Card glow="none" className="h-full flex flex-col items-center text-center p-8 border-yellow-500/20 bg-yellow-500/5 hover:bg-yellow-500/10 transition-colors duration-300">
-               <Bell className="w-12 h-12 text-yellow-500 mb-6 drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]" />
-              <h3 className="text-5xl font-black text-white mb-2">Manual</h3>
-               <p className="text-gray-400">Current enforcement is highly inefficient and error-prone</p>
-            </Card>
+             <Link href="/articles/manual-enforcement" className="group block h-full">
+               <Card glow="none" className="h-full flex flex-col items-center text-center p-8 border-yellow-500/20 bg-yellow-500/5 hover:bg-yellow-500/20 hover:border-yellow-500/50 transition-all duration-500 relative overflow-hidden">
+                 <Bell className="w-12 h-12 text-yellow-500 mb-6 drop-shadow-[0_0_10px_rgba(234,179,8,0.5)] group-hover:scale-110 transition-transform duration-500" />
+                <h3 className="text-5xl font-black text-white mb-2">Manual</h3>
+                 <p className="text-gray-400 mb-6">Current enforcement is highly inefficient and error-prone</p>
+                 <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-yellow-400 font-bold text-sm">
+                   Read Research <ArrowRight className="w-4 h-4 ml-2" />
+                </div>
+              </Card>
+             </Link>
            </motion.div>
         </motion.div>
       </section>
