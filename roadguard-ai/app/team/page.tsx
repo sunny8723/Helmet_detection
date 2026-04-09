@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { motion } from "framer-motion";
@@ -5,7 +6,15 @@ import { Linkedin, Instagram, ArrowLeft, Users, Zap } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { useRouter } from "next/navigation";
 
-const teamMembers = [
+interface TeamMember {
+  name: string;
+  role: string;
+  instagram?: string;
+  linkedin?: string;
+  photo: string;
+}
+
+const teamMembers: TeamMember[] = [
   {
     name: "Sunny Das",
     role: "Project Lead",
@@ -23,8 +32,6 @@ const teamMembers = [
   {
     name: "L. Bedajit Sharma",
     role: "Core Developer",
-    instagram: null,
-    linkedin: null,
     photo: "https://ui-avatars.com/api/?name=L+Bedajit+Sharma&background=050505&color=fff&size=256&font-size=0.33"
   }
 ];
