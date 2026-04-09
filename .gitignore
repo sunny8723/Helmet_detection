@@ -12,7 +12,9 @@ venv.bak/
 
 # Project specifics
 violators/
+violation_images/
 violations.json
+service_key.json
 
 # Node
 node_modules/
