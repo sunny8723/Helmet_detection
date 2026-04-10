@@ -2,7 +2,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Globe, Camera, ArrowLeft, Users, Zap } from "lucide-react";
+import { Linkedin, Instagram, ArrowLeft, Users, Zap } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { useRouter } from "next/navigation";
 
@@ -20,14 +20,14 @@ const teamMembers: TeamMember[] = [
     role: "Project Lead",
     instagram: "https://www.instagram.com/__.sunnydas.__/",
     linkedin: "https://www.linkedin.com/in/sunny-das05/",
-    photo: "https://ui-avatars.com/api/?name=Sunny+Das&background=050505&color=0df&size=256&font-size=0.33"
+    photo: "/photo/sunny.jpg"
   },
   {
     name: "Sachin Kumar",
     role: "Core Developer",
     instagram: "http://instagram.com/sachinkr05022004/",
     linkedin: "https://www.linkedin.com/in/sachin-kumar05/",
-    photo: "https://ui-avatars.com/api/?name=Sachin+Kumar&background=050505&color=0f3&size=256&font-size=0.33"
+    photo: "/photo/sachin.jpg"
   },
   {
     name: "L. Bedajit Sharma",
@@ -65,7 +65,7 @@ export default function TeamPage() {
             <span className="text-sm text-[var(--neon-blue)] font-medium tracking-wide">The Architects</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-white tracking-tight mb-4">
-            RoadGuard <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--neon-blue)] to-[var(--neon-green)]">Team</span>
+            IndianRoad <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--neon-blue)] to-[var(--neon-green)]">Team</span>
           </h1>
           <p className="text-gray-400 max-w-2xl text-lg">
             Meet the developers building the next generation of autonomous traffic safety and enforcement systems.
@@ -112,7 +112,7 @@ export default function TeamPage() {
                         className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 hover:border-[var(--neon-blue)]/50 transition-all"
                         title="LinkedIn"
                       >
-                        <Globe className="w-4 h-4" />
+                        <Linkedin className="w-4 h-4" />
                       </a>
                     )}
                     {member.instagram && (
@@ -123,7 +123,7 @@ export default function TeamPage() {
                         className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 hover:border-pink-500/50 transition-all"
                         title="Instagram"
                       >
-                        <Camera className="w-4 h-4" />
+                        <Instagram className="w-4 h-4" />
                       </a>
                     )}
                   </div>
