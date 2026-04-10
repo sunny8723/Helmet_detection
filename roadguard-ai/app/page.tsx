@@ -15,7 +15,7 @@ export default function Home() {
   const router = useRouter();
   const [scrollDirection, setScrollDirection] = useState<"down" | "up">("down");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
+
   const { scrollY } = useScroll();
   const yBackground = useTransform(scrollY, [0, 1000], [0, 200]);
 
@@ -90,19 +90,19 @@ export default function Home() {
     <main className="flex-1 flex flex-col relative w-full mb-10 overflow-hidden bg-[#050505]">
 
       {/* Background Decor - Parallax Image */}
-      <motion.div 
+      <motion.div
         style={{ y: yBackground }}
         className="absolute inset-0 z-0 pointer-events-none h-[130vh] overflow-hidden"
       >
         <motion.div
-           initial={{ scale: 1.1 }}
-           animate={{ scale: 1 }}
-           transition={{ duration: 7, ease: "easeOut" }}
-           className="w-full h-full relative"
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 7, ease: "easeOut" }}
+          className="w-full h-full relative"
         >
-          <Image 
-            src="/photo/hero-bg.jpg" 
-            alt="City Traffic" 
+          <Image
+            src="/photo/hero-bg.jpg"
+            alt="City Traffic"
             fill
             className="object-cover opacity-40"
             priority
@@ -257,12 +257,12 @@ export default function Home() {
           <motion.div variants={scrollVariants} className="md:col-span-2">
             <Link href="/features/helmet-detection" className="group block h-full">
               <Card glow="blue" spotlightColor="rgba(34,211,238,0.15)" className="h-full flex flex-col justify-end min-h-[300px] p-8 border border-cyan-500/20 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-cyan-950/40 via-[#111] to-[#111]">
-                 <ScanSearch className="w-10 h-10 text-cyan-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
-                 <h3 className="text-2xl font-bold text-white mb-2">Autonomous Helmet Detection</h3>
-                 <p className="text-gray-400 mb-8">YOLOv8 scanning 60fps live feeds instantly penalizing offenders at edge speed.</p>
-                 <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-cyan-400 font-bold text-sm">
-                    Explore Technology <ArrowRight className="w-4 h-4 ml-2" />
-                 </div>
+                <ScanSearch className="w-10 h-10 text-cyan-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
+                <h3 className="text-2xl font-bold text-white mb-2">Autonomous Helmet Detection</h3>
+                <p className="text-gray-400 mb-8">YOLOv8 scanning 60fps live feeds instantly penalizing offenders at edge speed.</p>
+                <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-cyan-400 font-bold text-sm">
+                  Explore Technology <ArrowRight className="w-4 h-4 ml-2" />
+                </div>
               </Card>
             </Link>
           </motion.div>
@@ -271,51 +271,51 @@ export default function Home() {
           <motion.div variants={scrollVariants} className="md:col-span-2">
             <Link href="/features/ocr-plate-extraction" className="group block h-full">
               <Card glow="green" spotlightColor="rgba(74,222,128,0.15)" className="h-full flex flex-col justify-end min-h-[300px] p-8 border border-green-500/20 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-green-900/40 via-[#111] to-[#111]">
-                 <Eye className="w-10 h-10 text-green-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
-                 <h3 className="text-2xl font-bold text-white mb-2">OCR Plate Extraction</h3>
-                 <p className="text-gray-400 mb-8">Pinpoint accuracy in isolating vehicle numbers during high-speed movement.</p>
-                 <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-green-400 font-bold text-sm">
-                    Explore Technology <ArrowRight className="w-4 h-4 ml-2" />
-                 </div>
+                <Eye className="w-10 h-10 text-green-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
+                <h3 className="text-2xl font-bold text-white mb-2">OCR Plate Extraction</h3>
+                <p className="text-gray-400 mb-8">Pinpoint accuracy in isolating vehicle numbers during high-speed movement.</p>
+                <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-green-400 font-bold text-sm">
+                  Explore Technology <ArrowRight className="w-4 h-4 ml-2" />
+                </div>
               </Card>
             </Link>
           </motion.div>
 
           {/* Bento Item 3: Full Width */}
           <motion.div variants={scrollVariants} className="md:col-span-4">
-             <Link href="/features/e-challan-pipeline" className="group block h-full">
-               <Card glow="blue" spotlightColor="rgba(255,255,255,0.08)" className="h-full flex flex-col md:flex-row items-center p-8 bg-[#0a0a0a] border border-white/10">
-                  <div className="flex-1 text-left mb-8 md:mb-0 md:mr-8 flex flex-col h-full justify-center">
-                    <div className="w-14 h-14 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-2xl flex items-center justify-center mb-6 border border-white/5 group-hover:scale-110 transition-transform duration-500">
-                      <CheckCircle className="w-7 h-7 text-cyan-400" />
-                    </div>
-                    <h3 className="text-3xl font-black text-white mb-4">Realtime E-Challan Pipeline</h3>
-                    <p className="text-gray-400 max-w-lg text-lg leading-relaxed mb-6">
-                      Automatically generates verifiable visual evidence and pushes directly to the central dashboard for rapid ticketing.
-                    </p>
-                    <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-blue-400 font-bold text-sm">
-                       Explore Technology <ArrowRight className="w-4 h-4 ml-2" />
-                    </div>
+            <Link href="/features/e-challan-pipeline" className="group block h-full">
+              <Card glow="blue" spotlightColor="rgba(255,255,255,0.08)" className="h-full flex flex-col md:flex-row items-center p-8 bg-[#0a0a0a] border border-white/10">
+                <div className="flex-1 text-left mb-8 md:mb-0 md:mr-8 flex flex-col h-full justify-center">
+                  <div className="w-14 h-14 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-2xl flex items-center justify-center mb-6 border border-white/5 group-hover:scale-110 transition-transform duration-500">
+                    <CheckCircle className="w-7 h-7 text-cyan-400" />
                   </div>
-                  
-                  {/* Custom CSS Mini-Chart Visual */}
-                  <div className="w-full md:w-1/2 flex items-end justify-between h-[200px] border border-white/5 bg-black rounded-xl p-6 relative overflow-hidden">
-                     <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/cubes.png')] opacity-10" />
-                     {[35, 60, 45, 85, 55, 95, 70, 90, 60, 100].map((h, i) => (
-                        <motion.div 
-                          key={i} 
-                          initial={{ height: 0 }}
-                          whileInView={{ height: `${h}%` }}
-                          transition={{ delay: 0.1 * i, duration: 0.8, type: "spring" }}
-                          className="w-[8%] bg-gradient-to-t from-blue-600 to-cyan-400 rounded-t-md shadow-[0_0_15px_rgba(34,211,238,0.3)] relative group-hover:from-blue-500 group-hover:to-cyan-300 transition-colors"
-                        />
-                     ))}
-                     <div className="absolute top-4 left-6 py-1 px-3 bg-white/10 backdrop-blur-md rounded border border-white/20 text-xs font-mono text-cyan-100">
-                       SYSTEM LOAD
-                     </div>
+                  <h3 className="text-3xl font-black text-white mb-4">Realtime E-Challan Pipeline</h3>
+                  <p className="text-gray-400 max-w-lg text-lg leading-relaxed mb-6">
+                    Automatically generates verifiable visual evidence and pushes directly to the central dashboard for rapid ticketing.
+                  </p>
+                  <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-blue-400 font-bold text-sm">
+                    Explore Technology <ArrowRight className="w-4 h-4 ml-2" />
                   </div>
-               </Card>
-             </Link>
+                </div>
+
+                {/* Custom CSS Mini-Chart Visual */}
+                <div className="w-full md:w-1/2 flex items-end justify-between h-[200px] border border-white/5 bg-black rounded-xl p-6 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/cubes.png')] opacity-10" />
+                  {[35, 60, 45, 85, 55, 95, 70, 90, 60, 100].map((h, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ height: 0 }}
+                      whileInView={{ height: `${h}%` }}
+                      transition={{ delay: 0.1 * i, duration: 0.8, type: "spring" }}
+                      className="w-[8%] bg-gradient-to-t from-blue-600 to-cyan-400 rounded-t-md shadow-[0_0_15px_rgba(34,211,238,0.3)] relative group-hover:from-blue-500 group-hover:to-cyan-300 transition-colors"
+                    />
+                  ))}
+                  <div className="absolute top-4 left-6 py-1 px-3 bg-white/10 backdrop-blur-md rounded border border-white/20 text-xs font-mono text-cyan-100">
+                    SYSTEM LOAD
+                  </div>
+                </div>
+              </Card>
+            </Link>
           </motion.div>
         </motion.div>
       </section>
@@ -334,11 +334,11 @@ export default function Home() {
         </motion.div>
 
         <motion.div
-           variants={staggerContainer}
-           initial="hidden"
-           whileInView="visible"
-           viewport={{ once: false, margin: "-10%" }}
-           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, margin: "-10%" }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {[
             { title: "Limited Dataset", desc: "Initially had very small dataset for helmet detection", icon: Database },
@@ -375,11 +375,11 @@ export default function Home() {
             <div className="min-w-[1000px] md:min-w-0 relative h-[450px] flex flex-col justify-center">
               {/* Timeline Line */}
               <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent transform -translate-y-1/2" />
-              
+
               <div className="grid grid-cols-6 h-full items-center relative z-10">
                 {[
                   { month: "July", detail: "Mid", desc: "Project planning started", icon: Flag },
-                  { month: "September", detail: "", desc: "Topic finalized", icon: Target },
+                  { month: "September", detail: "Mid", desc: "Topic finalized", icon: Target },
                   { month: "October", detail: "Mid", desc: "Dataset collection", icon: Database },
                   { month: "December", detail: "Mid", desc: "Model training", icon: Cpu },
                   { month: "March", detail: "Mid", desc: "Dataset expansion", icon: Layers },
@@ -405,7 +405,7 @@ export default function Home() {
                     <div className="relative flex items-center justify-center">
                       <div className="w-5 h-5 rounded-full bg-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.9)] z-20 border-4 border-[#050505]" />
                       <div className="absolute w-10 h-10 rounded-full bg-cyan-500/20 animate-ping" />
-                      
+
                       {/* Mobile Card (Below dot) */}
                       <div className="absolute top-8 w-40 md:hidden">
                         <Card glow="none" className="bg-[#0a0a0a]/60 border border-white/10 p-3 text-center">
@@ -417,7 +417,7 @@ export default function Home() {
 
                     {/* Desktop Icon Indicator */}
                     <div className={`absolute left-0 right-0 flex justify-center hidden md:flex ${idx % 2 === 0 ? "top-[calc(50%+20px)]" : "bottom-[calc(50%+20px)]"}`}>
-                       <item.icon className="w-4 h-4 text-cyan-400 opacity-30" />
+                      <item.icon className="w-4 h-4 text-cyan-400 opacity-30" />
                     </div>
                   </motion.div>
                 ))}
@@ -443,18 +443,18 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
-               <motion.div key={i} variants={scrollVariants} className="group relative rounded-2xl overflow-hidden border border-white/10 aspect-video bg-[#111]">
-                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                 <img src={`/photo/indian-road-${i}.jpg`} alt={`Deployment ${i}`} className="w-full h-full object-cover opacity-60 group-hover:opacity-90 group-hover:scale-105 transition-all duration-700" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
-                 <div className="absolute bottom-6 left-6 right-6 pointer-events-none">
-                    <div className="flex items-center space-x-2 mb-2">
-                       <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.8)]" />
-                       <span className="text-xs font-mono text-green-400 tracking-widest drop-shadow-md">LIVE • CAMERA 0{i}</span>
-                    </div>
-                    <h3 className="text-white font-bold text-lg drop-shadow-md">Indian City Junction 0{i}</h3>
-                 </div>
-               </motion.div>
+              <motion.div key={i} variants={scrollVariants} className="group relative rounded-2xl overflow-hidden border border-white/10 aspect-video bg-[#111]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`/photo/indian-road-${i}.jpg`} alt={`Deployment ${i}`} className="w-full h-full object-cover opacity-60 group-hover:opacity-90 group-hover:scale-105 transition-all duration-700" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                <div className="absolute bottom-6 left-6 right-6 pointer-events-none">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.8)]" />
+                    <span className="text-xs font-mono text-green-400 tracking-widest drop-shadow-md">LIVE • CAMERA 0{i}</span>
+                  </div>
+                  <h3 className="text-white font-bold text-lg drop-shadow-md">Indian City Junction 0{i}</h3>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
