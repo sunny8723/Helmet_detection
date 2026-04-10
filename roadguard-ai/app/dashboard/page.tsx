@@ -114,25 +114,48 @@ export default function DashboardPage() {
         transition={{ delay: 0.1 }}
         className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-        <Card glow="blue" className="bg-[#0a0a0a]/80 border border-cyan-500/30 flex items-center p-5">
-           <Zap className="w-12 h-12 text-cyan-400 mr-5" />
-           <div>
-             <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Avg Latency</p>
-             <h3 className="text-3xl font-black text-white">{metrics.latency}s</h3>
+        <Card glow="blue" spotlightColor="rgba(34,211,238,0.15)" className="bg-[#0a0a0a]/80 border border-cyan-500/30 flex justify-between items-center p-6 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-cyan-950/40 via-[#111] to-[#111]">
+           <div className="flex items-center">
+             <Zap className="w-12 h-12 text-cyan-400 mr-5" />
+             <div>
+               <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Avg Latency</p>
+               <h3 className="text-3xl font-black text-white">{metrics.latency}s</h3>
+             </div>
+           </div>
+           <div className="hidden sm:flex items-end space-x-1 h-12 opacity-80">
+             {[4, 2, 5, 3, 6, 4, 7, 5].map((h, i) => (
+                <div key={i} className="w-2 bg-cyan-400/50 rounded-t-sm" style={{ height: `${h * 15}%` }} />
+             ))}
            </div>
         </Card>
-        <Card glow="green" className="bg-[#0a0a0a]/80 border border-green-500/30 flex items-center p-5">
-           <Target className="w-12 h-12 text-green-400 mr-5" />
-           <div>
-             <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Accuracy</p>
-             <h3 className="text-3xl font-black text-white">{metrics.accuracy}%</h3>
+
+        <Card glow="green" spotlightColor="rgba(74,222,128,0.15)" className="bg-[#0a0a0a]/80 border border-green-500/30 flex justify-between items-center p-6 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-green-900/40 via-[#111] to-[#111]">
+           <div className="flex items-center">
+             <Target className="w-12 h-12 text-green-400 mr-5" />
+             <div>
+               <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Accuracy</p>
+               <h3 className="text-3xl font-black text-white">{metrics.accuracy}%</h3>
+             </div>
+           </div>
+           <div className="hidden sm:flex items-end space-x-1 h-12 opacity-80">
+             {[5, 6, 7, 6, 8, 7, 9, 8].map((h, i) => (
+                <div key={i} className="w-2 bg-green-400/50 rounded-t-sm" style={{ height: `${h * 10}%` }} />
+             ))}
            </div>
         </Card>
-        <Card glow="none" className="bg-[#0a0a0a]/80 border border-orange-500/30 flex items-center p-5">
-           <Activity className="w-12 h-12 text-orange-500 mr-5" />
-           <div>
-             <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Total Violations</p>
-             <h3 className="text-3xl font-black text-white">{metrics.total}</h3>
+
+        <Card glow="none" spotlightColor="rgba(249,115,22,0.15)" className="bg-[#0a0a0a]/80 border border-orange-500/30 flex justify-between items-center p-6 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-orange-900/40 via-[#111] to-[#111]">
+           <div className="flex items-center">
+             <Activity className="w-12 h-12 text-orange-500 mr-5" />
+             <div>
+               <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Total Violations</p>
+               <h3 className="text-3xl font-black text-white">{metrics.total}</h3>
+             </div>
+           </div>
+           <div className="hidden sm:flex items-end space-x-1 h-12 opacity-80">
+             {[2, 3, 2, 4, 3, 5, 4, 3].map((h, i) => (
+                <div key={i} className="w-2 bg-orange-400/50 rounded-t-sm" style={{ height: `${h * 15}%` }} />
+             ))}
            </div>
         </Card>
       </motion.div>

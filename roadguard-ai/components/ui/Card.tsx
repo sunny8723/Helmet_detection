@@ -1,29 +1,59 @@
 "use client";
 
 import * as React from "react";
-import { motion, HTMLMotionProps } from "framer-motion";
+import { motion, HTMLMotionProps, useMotionValue, useMotionTemplate } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface CardProps extends HTMLMotionProps<"div"> {
   glass?: boolean;
   glow?: "none" | "blue" | "green";
+  spotlightColor?: string;
 }
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, glass = true, glow = "none", children, ...props }, ref) => {
+  ({ className, glass = true, glow = "none", spotlightColor = "rgba(255,255,255,0.06)", children, onMouseMove, ...props }, ref) => {
+    
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+
+    function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+      const { left, top } = e.currentTarget.getBoundingClientRect();
+      mouseX.set(e.clientX - left);
+      mouseY.set(e.clientY - top);
+      if (onMouseMove) onMouseMove(e);
+    }
+
     return (
       <motion.div
         ref={ref}
+        onMouseMove={handleMouseMove}
         className={cn(
-          "rounded-2xl p-6",
-          glass ? "glass-panel" : "bg-[#111] border border-[#333]",
-          glow === "blue" && "hover:shadow-[0_8px_30px_rgba(34,211,238,0.15)] border-transparent hover:border-cyan-500/50 transition-all duration-300",
-          glow === "green" && "hover:shadow-[0_8px_30px_rgba(74,222,128,0.15)] border-transparent hover:border-green-500/50 transition-all duration-300",
+          "rounded-2xl p-6 relative overflow-hidden group",
+          glass ? "bg-white/5 backdrop-blur-md border border-white/10" : "bg-[#111] border border-[#333]",
+          glow === "blue" && "border-white/10 hover:border-cyan-500/40 transition-colors duration-300 shadow-none hover:shadow-[0_0_20px_rgba(34,211,238,0.1)]",
+          glow === "green" && "border-white/10 hover:border-green-500/40 transition-colors duration-300 shadow-none hover:shadow-[0_0_20px_rgba(74,222,128,0.1)]",
           className
         )}
         {...props}
       >
-        {children}
+        {/* Dynamic Framer Motion Spotlight Effect */}
+        <motion.div
+          className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
+          style={{
+            background: useMotionTemplate`
+              radial-gradient(
+                650px circle at ${mouseX}px ${mouseY}px,
+                ${spotlightColor},
+                transparent 80%
+              )
+            `,
+          }}
+        />
+        
+        {/* Content Container protecting text from spotlight overlap */}
+        <div className="relative z-10 w-full h-full flex flex-col">
+          {children}
+        </div>
       </motion.div>
     );
   }
