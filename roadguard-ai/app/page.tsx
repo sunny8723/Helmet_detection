@@ -151,7 +151,7 @@ export default function Home() {
             className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6"
           >
             <Button
-              variant="default"
+              variant="primary"
               size="lg"
               className="w-full sm:w-auto gap-2 group bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-[0_4px_14px_rgba(0,0,0,0.25)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.25)] border-0 hover:scale-105 transition-all duration-300"
               onClick={(e) => handleProtectedAction(e, '/dashboard')}
