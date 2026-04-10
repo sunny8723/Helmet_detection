@@ -88,11 +88,11 @@ export default function Home() {
 
   const timelineVariants: Variants = {
     hidden: { opacity: 0, scale: 0.9, y: 20 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
-      y: 0, 
-      transition: { duration: 0.5, ease: "easeOut" } 
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" }
     }
   };
 
@@ -123,7 +123,7 @@ export default function Home() {
       </motion.div>
 
       {/* HERO SECTION */}
-      <section className="min-h-[100vh] flex flex-col justify-center items-center text-center px-4 relative z-10 pt-16">
+      <section id="hero" className="min-h-[100vh] flex flex-col justify-center items-center text-center px-4 relative z-10 pt-16">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -183,7 +183,7 @@ export default function Home() {
       </section>
 
       {/* ROAD SAFETY STATISTICS */}
-      <section className="py-24 px-6 relative z-10 max-w-7xl mx-auto w-full overflow-hidden">
+      <section id="crisis" className="py-24 px-6 relative z-10 max-w-7xl mx-auto w-full overflow-hidden">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -244,7 +244,7 @@ export default function Home() {
       </section>
 
       {/* SOLUTION OVERVIEW & FEATURES */}
-      <section className="py-24 px-6 relative z-10 max-w-7xl mx-auto w-full overflow-hidden">
+      <section id="solution" className="py-24 px-6 relative z-10 max-w-7xl mx-auto w-full overflow-hidden">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -331,7 +331,7 @@ export default function Home() {
       </section>
 
       {/* CHALLENGES SECTION */}
-      <section className="py-24 px-6 relative z-10 max-w-7xl mx-auto w-full overflow-hidden">
+      <section id="challenges" className="py-24 px-6 relative z-10 max-w-7xl mx-auto w-full overflow-hidden">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -368,7 +368,7 @@ export default function Home() {
       </section>
 
       {/* PROJECT JOURNEY SECTION */}
-      <section className="py-24 px-6 relative z-10 w-full overflow-hidden">
+      <section id="journey" className="py-24 px-6 relative z-10 w-full overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial="hidden"
@@ -388,12 +388,12 @@ export default function Home() {
 
               <div className="grid grid-cols-6 h-full items-center relative z-10">
                 {[
-                  { month: "July,2025", detail: "Mid", desc: "Project planning started", icon: Flag },
-                  { month: "September,2025", detail: "Mid", desc: "Topic finalized", icon: Target },
-                  { month: "October,2025", detail: "Mid", desc: "Dataset collection", icon: Database },
-                  { month: "December,2025", detail: "Mid", desc: "Model training", icon: Cpu },
-                  { month: "March,2026", detail: "Mid", desc: "Dataset expansion", icon: Layers },
-                  { month: "April,2026", detail: "1", desc: "Website development", icon: LayoutDashboard },
+                  { month: "July,2025", desc: "Project planning started", icon: Flag },
+                  { month: "September,2025", desc: "Topic finalized", icon: Target },
+                  { month: "October,2025", desc: "Dataset collection", icon: Database },
+                  { month: "December,2025", desc: "Model training", icon: Cpu },
+                  { month: "March,2026", desc: "Dataset expansion", icon: Layers },
+                  { month: "April,2026", desc: "Website development", icon: LayoutDashboard },
                 ].map((item, idx) => (
                   <motion.div
                     key={idx}
@@ -438,7 +438,7 @@ export default function Home() {
       </section>
 
       {/* SYSTEM IN ACTION / DEPLOYMENT */}
-      <section className="py-24 px-6 relative z-10 w-full bg-[#0a0a0a]/50 border-t border-gray-800">
+      <section id="action" className="py-24 px-6 relative z-10 w-full bg-[#0a0a0a]/50 border-t border-gray-800">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial="hidden"

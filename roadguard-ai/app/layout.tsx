@@ -19,6 +19,8 @@ export const metadata: Metadata = {
   description: "AI-powered helmet and traffic violation detection system",
 };
 
+import { SideNav } from "@/components/SideNav";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,7 +31,8 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-[#050505] text-white">
+      <body className="min-h-full flex flex-col bg-[#050505] text-white overflow-x-hidden">
+        <SideNav />
         <Navbar />
         <div className="pt-20 flex-1 flex flex-col">
           {children}
