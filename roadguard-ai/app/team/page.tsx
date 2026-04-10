@@ -2,7 +2,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Linkedin, Instagram, ArrowLeft, Users, Zap } from "lucide-react";
+import { Globe, Camera, ArrowLeft, Users, Zap } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { useRouter } from "next/navigation";
 
@@ -112,7 +112,7 @@ export default function TeamPage() {
                         className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 hover:border-[var(--neon-blue)]/50 transition-all"
                         title="LinkedIn"
                       >
-                        <Linkedin className="w-4 h-4" />
+                        <Globe className="w-4 h-4" />
                       </a>
                     )}
                     {member.instagram && (
@@ -123,7 +123,7 @@ export default function TeamPage() {
                         className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 hover:border-pink-500/50 transition-all"
                         title="Instagram"
                       >
-                        <Instagram className="w-4 h-4" />
+                        <Camera className="w-4 h-4" />
                       </a>
                     )}
                   </div>
