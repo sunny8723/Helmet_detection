@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, Variants, useScroll, useTransform } from "framer-motion";
-import { Shield, Camera, Bell, Activity, ArrowRight, Eye, ScanSearch, CheckCircle, Database, Image, Type, Gauge, Flag, Calendar, Cpu, Layers, LayoutDashboard, Target } from "lucide-react";
+import { Shield, Camera, Bell, Activity, ArrowRight, Eye, ScanSearch, CheckCircle, Database, Image as ImageIcon, Type, Gauge, Flag, Calendar, Cpu, Layers, LayoutDashboard, Target } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useState, useEffect } from "react";
@@ -342,7 +342,7 @@ export default function Home() {
         >
           {[
             { title: "Limited Dataset", desc: "Initially had very small dataset for helmet detection", icon: Database },
-            { title: "Data Quality Issues", desc: "Variations in lighting, angles, and occlusions affected accuracy", icon: Image },
+            { title: "Data Quality Issues", desc: "Variations in lighting, angles, and occlusions affected accuracy", icon: ImageIcon },
             { title: "OCR Accuracy Challenges", desc: "Number plate recognition inconsistent in low-light or motion blur", icon: Type },
             { title: "Real-time Performance", desc: "Balancing detection accuracy with low latency was difficult", icon: Gauge },
           ].map((challenge, idx) => (
