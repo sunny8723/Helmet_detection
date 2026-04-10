@@ -200,6 +200,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Live Video Embedded Display */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src="http://127.0.0.1:5000/video_feed" 
                 alt="Live Camera Feed" 
@@ -267,6 +268,7 @@ export default function DashboardPage() {
                     {/* Thumbnail Placeholder */}
                     <div className="w-16 h-16 bg-black rounded-lg overflow-hidden relative border border-gray-800 group-hover:border-gray-600 transition-colors shrink-0">
                       {v.image ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
                         <img src={v.image} alt={v.plate} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center">
