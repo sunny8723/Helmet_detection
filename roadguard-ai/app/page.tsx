@@ -256,52 +256,67 @@ export default function Home() {
         >
           {/* Bento Item 1: Wide */}
           <motion.div variants={scrollVariants} className="md:col-span-2">
-            <Card glow="blue" spotlightColor="rgba(34,211,238,0.15)" className="h-full flex flex-col justify-end min-h-[300px] p-8 border border-cyan-500/20 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-cyan-950/40 via-[#111] to-[#111]">
-               <ScanSearch className="w-10 h-10 text-cyan-400 mb-6" />
-               <h3 className="text-2xl font-bold text-white mb-2">Autonomous Helmet Detection</h3>
-               <p className="text-gray-400">YOLOv8 scanning 60fps live feeds instantly penalizing offenders at edge speed.</p>
-            </Card>
+            <Link href="/features/helmet-detection" className="group block h-full">
+              <Card glow="blue" spotlightColor="rgba(34,211,238,0.15)" className="h-full flex flex-col justify-end min-h-[300px] p-8 border border-cyan-500/20 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-cyan-950/40 via-[#111] to-[#111]">
+                 <ScanSearch className="w-10 h-10 text-cyan-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
+                 <h3 className="text-2xl font-bold text-white mb-2">Autonomous Helmet Detection</h3>
+                 <p className="text-gray-400 mb-8">YOLOv8 scanning 60fps live feeds instantly penalizing offenders at edge speed.</p>
+                 <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-cyan-400 font-bold text-sm">
+                    Explore Technology <ArrowRight className="w-4 h-4 ml-2" />
+                 </div>
+              </Card>
+            </Link>
           </motion.div>
 
           {/* Bento Item 2: Square */}
           <motion.div variants={scrollVariants} className="md:col-span-2">
-            <Card glow="green" spotlightColor="rgba(74,222,128,0.15)" className="h-full flex flex-col justify-end min-h-[300px] p-8 border border-green-500/20 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-green-900/40 via-[#111] to-[#111]">
-               <Eye className="w-10 h-10 text-green-400 mb-6" />
-               <h3 className="text-2xl font-bold text-white mb-2">OCR Plate Extraction</h3>
-               <p className="text-gray-400">Pinpoint accuracy in isolating vehicle numbers during high-speed movement.</p>
-            </Card>
+            <Link href="/features/ocr-plate-extraction" className="group block h-full">
+              <Card glow="green" spotlightColor="rgba(74,222,128,0.15)" className="h-full flex flex-col justify-end min-h-[300px] p-8 border border-green-500/20 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-green-900/40 via-[#111] to-[#111]">
+                 <Eye className="w-10 h-10 text-green-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
+                 <h3 className="text-2xl font-bold text-white mb-2">OCR Plate Extraction</h3>
+                 <p className="text-gray-400 mb-8">Pinpoint accuracy in isolating vehicle numbers during high-speed movement.</p>
+                 <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-green-400 font-bold text-sm">
+                    Explore Technology <ArrowRight className="w-4 h-4 ml-2" />
+                 </div>
+              </Card>
+            </Link>
           </motion.div>
 
           {/* Bento Item 3: Full Width */}
           <motion.div variants={scrollVariants} className="md:col-span-4">
-             <Card glow="blue" spotlightColor="rgba(255,255,255,0.08)" className="h-full flex flex-col md:flex-row items-center p-8 bg-[#0a0a0a] border border-white/10">
-                <div className="flex-1 text-left mb-8 md:mb-0 md:mr-8">
-                  <div className="w-14 h-14 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-2xl flex items-center justify-center mb-6 border border-white/5">
-                    <CheckCircle className="w-7 h-7 text-cyan-400" />
+             <Link href="/features/e-challan-pipeline" className="group block h-full">
+               <Card glow="blue" spotlightColor="rgba(255,255,255,0.08)" className="h-full flex flex-col md:flex-row items-center p-8 bg-[#0a0a0a] border border-white/10">
+                  <div className="flex-1 text-left mb-8 md:mb-0 md:mr-8 flex flex-col h-full justify-center">
+                    <div className="w-14 h-14 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-2xl flex items-center justify-center mb-6 border border-white/5 group-hover:scale-110 transition-transform duration-500">
+                      <CheckCircle className="w-7 h-7 text-cyan-400" />
+                    </div>
+                    <h3 className="text-3xl font-black text-white mb-4">Realtime E-Challan Pipeline</h3>
+                    <p className="text-gray-400 max-w-lg text-lg leading-relaxed mb-6">
+                      Automatically generates verifiable visual evidence and pushes directly to the central dashboard for rapid ticketing.
+                    </p>
+                    <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-blue-400 font-bold text-sm">
+                       Explore Technology <ArrowRight className="w-4 h-4 ml-2" />
+                    </div>
                   </div>
-                  <h3 className="text-3xl font-black text-white mb-4">Realtime E-Challan Pipeline</h3>
-                  <p className="text-gray-400 max-w-lg text-lg leading-relaxed">
-                    Automatically generates verifiable visual evidence and pushes directly to the central dashboard for rapid ticketing.
-                  </p>
-                </div>
-                
-                {/* Custom CSS Mini-Chart Visual */}
-                <div className="w-full md:w-1/2 flex items-end justify-between h-[200px] border border-white/5 bg-black rounded-xl p-6 relative overflow-hidden group">
-                   <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/cubes.png')] opacity-10" />
-                   {[35, 60, 45, 85, 55, 95, 70, 90, 60, 100].map((h, i) => (
-                      <motion.div 
-                        key={i} 
-                        initial={{ height: 0 }}
-                        whileInView={{ height: `${h}%` }}
-                        transition={{ delay: 0.1 * i, duration: 0.8, type: "spring" }}
-                        className="w-[8%] bg-gradient-to-t from-blue-600 to-cyan-400 rounded-t-md shadow-[0_0_15px_rgba(34,211,238,0.3)] relative group-hover:from-blue-500 group-hover:to-cyan-300 transition-colors"
-                      />
-                   ))}
-                   <div className="absolute top-4 left-6 py-1 px-3 bg-white/10 backdrop-blur-md rounded border border-white/20 text-xs font-mono text-cyan-100">
-                     SYSTEM LOAD
-                   </div>
-                </div>
-             </Card>
+                  
+                  {/* Custom CSS Mini-Chart Visual */}
+                  <div className="w-full md:w-1/2 flex items-end justify-between h-[200px] border border-white/5 bg-black rounded-xl p-6 relative overflow-hidden">
+                     <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/cubes.png')] opacity-10" />
+                     {[35, 60, 45, 85, 55, 95, 70, 90, 60, 100].map((h, i) => (
+                        <motion.div 
+                          key={i} 
+                          initial={{ height: 0 }}
+                          whileInView={{ height: `${h}%` }}
+                          transition={{ delay: 0.1 * i, duration: 0.8, type: "spring" }}
+                          className="w-[8%] bg-gradient-to-t from-blue-600 to-cyan-400 rounded-t-md shadow-[0_0_15px_rgba(34,211,238,0.3)] relative group-hover:from-blue-500 group-hover:to-cyan-300 transition-colors"
+                        />
+                     ))}
+                     <div className="absolute top-4 left-6 py-1 px-3 bg-white/10 backdrop-blur-md rounded border border-white/20 text-xs font-mono text-cyan-100">
+                       SYSTEM LOAD
+                     </div>
+                  </div>
+               </Card>
+             </Link>
           </motion.div>
         </motion.div>
       </section>
