@@ -371,47 +371,57 @@ export default function Home() {
             <h2 className="text-4xl md:text-5xl font-bold text-white">Project <span className="bg-gradient-to-r from-blue-400 to-cyan-500 text-transparent bg-clip-text">Journey</span></h2>
           </motion.div>
 
-          <div className="relative">
-            {/* Timeline Line */}
-            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent transform -translate-y-1/2 hidden md:block" />
-            
-            <div className="grid grid-cols-1 md:grid-cols-6 gap-8 relative z-10">
-              {[
-                { month: "July", detail: "Mid", desc: "Project planning started", icon: Flag },
-                { month: "September", detail: "", desc: "Topic finalized", icon: Target },
-                { month: "October", detail: "Mid", desc: "Dataset collection", icon: Database },
-                { month: "December", detail: "Mid", desc: "Model training", icon: Cpu },
-                { month: "March", detail: "Mid", desc: "Dataset expansion", icon: Layers },
-                { month: "April", detail: "1", desc: "Website development", icon: LayoutDashboard },
-              ].map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  variants={scrollVariants}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: false, margin: "-10%" }}
-                  className={`flex flex-col items-center ${idx % 2 === 0 ? "md:flex-col" : "md:flex-col-reverse"}`}
-                >
-                  <div className={`w-full ${idx % 2 === 0 ? "mb-8" : "mt-8"} hidden md:block h-32`}>
-                    <Card glow="none" className="bg-[#0a0a0a]/60 border border-white/10 p-4 text-center h-full flex flex-col justify-center hover:border-cyan-500/40 transition-colors">
-                      <p className="text-cyan-400 text-xs font-bold mb-1">{item.month} {item.detail}</p>
-                      <p className="text-gray-300 text-xs leading-snug">{item.desc}</p>
-                    </Card>
-                  </div>
+          <div className="relative overflow-x-auto pb-12 hide-scrollbar">
+            <div className="min-w-[1000px] md:min-w-0 relative h-[450px] flex flex-col justify-center">
+              {/* Timeline Line */}
+              <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent transform -translate-y-1/2" />
+              
+              <div className="grid grid-cols-6 h-full items-center relative z-10">
+                {[
+                  { month: "July", detail: "Mid", desc: "Project planning started", icon: Flag },
+                  { month: "September", detail: "", desc: "Topic finalized", icon: Target },
+                  { month: "October", detail: "Mid", desc: "Dataset collection", icon: Database },
+                  { month: "December", detail: "Mid", desc: "Model training", icon: Cpu },
+                  { month: "March", detail: "Mid", desc: "Dataset expansion", icon: Layers },
+                  { month: "April", detail: "1", desc: "Website development", icon: LayoutDashboard },
+                ].map((item, idx) => (
+                  <motion.div
+                    key={idx}
+                    variants={scrollVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: false, margin: "-10%" }}
+                    className="relative flex flex-col items-center justify-center h-full"
+                  >
+                    {/* Desktop Card (Alternating) */}
+                    <div className={`absolute left-4 right-4 hidden md:block ${idx % 2 === 0 ? "bottom-[calc(50%+40px)]" : "top-[calc(50%+40px)]"}`}>
+                      <Card glow="none" className="bg-[#0a0a0a]/60 border border-white/10 p-4 text-center hover:border-cyan-500/40 transition-colors">
+                        <p className="text-cyan-400 text-xs font-bold mb-1">{item.month} {item.detail}</p>
+                        <p className="text-gray-300 text-xs leading-snug">{item.desc}</p>
+                      </Card>
+                    </div>
 
-                  <div className="relative flex items-center justify-center">
-                    <div className="w-4 h-4 rounded-full bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.8)] z-20" />
-                    <div className="absolute w-8 h-8 rounded-full bg-cyan-500/20 animate-ping" />
-                  </div>
+                    {/* Dot on the Line */}
+                    <div className="relative flex items-center justify-center">
+                      <div className="w-5 h-5 rounded-full bg-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.9)] z-20 border-4 border-[#050505]" />
+                      <div className="absolute w-10 h-10 rounded-full bg-cyan-500/20 animate-ping" />
+                      
+                      {/* Mobile Card (Below dot) */}
+                      <div className="absolute top-8 w-40 md:hidden">
+                        <Card glow="none" className="bg-[#0a0a0a]/60 border border-white/10 p-3 text-center">
+                          <p className="text-cyan-400 text-xs font-bold mb-1">{item.month} {item.detail}</p>
+                          <p className="text-gray-300 text-xs">{item.desc}</p>
+                        </Card>
+                      </div>
+                    </div>
 
-                  <div className={`w-full mt-4 md:hidden`}>
-                    <Card glow="none" className="bg-[#0a0a0a]/60 border border-white/10 p-4 text-center">
-                      <p className="text-cyan-400 text-sm font-bold mb-1">{item.month} {item.detail}</p>
-                      <p className="text-gray-300 text-sm">{item.desc}</p>
-                    </Card>
-                  </div>
-                </motion.div>
-              ))}
+                    {/* Desktop Icon Indicator */}
+                    <div className={`absolute left-0 right-0 flex justify-center hidden md:flex ${idx % 2 === 0 ? "top-[calc(50%+20px)]" : "bottom-[calc(50%+20px)]"}`}>
+                       <item.icon className="w-4 h-4 text-cyan-400 opacity-30" />
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
