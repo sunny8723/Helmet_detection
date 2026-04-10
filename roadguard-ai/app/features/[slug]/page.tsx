@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { ArrowLeft, ScanSearch, Eye, CheckCircle, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Navbar } from "@/components/Navbar";
 
 // Content Dictionary for dynamic slug rendering
 const featureContent: Record<string, any> = {
@@ -65,7 +64,6 @@ export default function FeaturePage() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col items-center">
-      <Navbar />
       
       {/* Dynamic Background Mesh */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
