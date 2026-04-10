@@ -388,12 +388,12 @@ export default function Home() {
 
               <div className="grid grid-cols-6 h-full items-center relative z-10">
                 {[
-                  { month: "July,2025", desc: "Project planning started", icon: Flag },
-                  { month: "September,2025", desc: "Topic finalized", icon: Target },
-                  { month: "October,2025", desc: "Dataset collection", icon: Database },
-                  { month: "December,2025", desc: "Model training", icon: Cpu },
-                  { month: "March,2026", desc: "Dataset expansion", icon: Layers },
-                  { month: "April,2026", desc: "Website development", icon: LayoutDashboard },
+                  { month: "July,2025", detail: "Mid", desc: "Project planning started", icon: Flag },
+                  { month: "September,2025", detail: "Mid", desc: "Topic finalized", icon: Target },
+                  { month: "October,2025", detail: "Mid", desc: "Dataset collection", icon: Database },
+                  { month: "December,2025", detail: "Mid", desc: "Model training", icon: Cpu },
+                  { month: "March,2026", detail: "Mid", desc: "Dataset expansion", icon: Layers },
+                  { month: "April,2026", detail: "1", desc: "Website development", icon: LayoutDashboard },
                 ].map((item, idx) => (
                   <motion.div
                     key={idx}
