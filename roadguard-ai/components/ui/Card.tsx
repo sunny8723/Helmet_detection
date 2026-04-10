@@ -51,9 +51,9 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         />
         
         {/* Content Container protecting text from spotlight overlap */}
-        <div className="relative z-10 w-full h-full flex flex-col">
+        <motion.div className="relative z-10 w-full h-full flex flex-col">
           {children}
-        </div>
+        </motion.div>
       </motion.div>
     );
   }
