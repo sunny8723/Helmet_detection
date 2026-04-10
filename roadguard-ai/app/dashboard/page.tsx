@@ -161,10 +161,30 @@ export default function DashboardPage() {
                 <div className="absolute bottom-[20%] right-[20%] w-10 h-10 border-b-2 border-r-2 border-[var(--neon-green)]/70" />
               </div>
 
-              <div className="flex flex-col items-center">
-                <Camera className="w-16 h-16 text-white/5 mb-4" />
-                <p className="text-white/20 font-mono text-sm uppercase tracking-widest relative z-10 mix-blend-screen">Awaiting Video Source Integration...</p>
-              </div>
+              {/* Live Video Embedded Display */}
+              <img 
+                src="http://127.0.0.1:5000/video_feed" 
+                alt="Live Camera Feed" 
+                className="w-[95%] h-[95%] rounded border border-white/10 object-cover relative z-10 shadow-[0_0_20px_var(--neon-blue)]" 
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const parent = e.currentTarget.parentElement;
+                  if (parent && !parent.querySelector('.fallback-msg')) {
+                     const fallback = document.createElement('div');
+                     fallback.className = 'flex flex-col items-center fallback-msg relative z-10 mt-8';
+                     fallback.innerHTML = `
+                       <svg class="w-16 h-16 text-white/5 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                         <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle>
+                       </svg>
+                       <p class="text-red-500/80 font-mono text-sm uppercase tracking-widest text-center px-4">
+                         Video Stream Offline.<br/>
+                         <span class="text-white/30 text-xs">Run 'python main.py' to start the backend.</span>
+                       </p>
+                     `;
+                     parent.appendChild(fallback);
+                  }
+                }} 
+              />
             </div>
           </Card>
         </motion.div>
