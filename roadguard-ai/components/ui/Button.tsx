@@ -16,7 +16,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       secondary: "bg-gray-800 text-white hover:bg-gray-700",
       outline: "border border-gray-600 text-gray-300 hover:text-white hover:border-gray-400",
       ghost: "text-gray-400 hover:text-white hover:bg-white/10",
-      neon: "bg-transparent border border-[var(--neon-blue)] text-[var(--neon-blue)] hover:bg-[var(--neon-blue)] hover:text-black shadow-neon-blue font-bold transition-all duration-300",
+      neon: "bg-gradient-to-r from-cyan-400 to-blue-500 text-white hover:from-cyan-500 hover:to-blue-600 shadow-[0_4px_14px_rgba(34,211,238,0.3)] font-medium transition-all duration-300 border border-white/10 hover:border-white/20",
     };
 
     const sizes = {

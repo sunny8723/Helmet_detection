@@ -17,8 +17,8 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         className={cn(
           "rounded-2xl p-6",
           glass ? "glass-panel" : "bg-[#111] border border-[#333]",
-          glow === "blue" && "hover:shadow-neon-blue border-transparent hover:border-[var(--neon-blue)] transition-all duration-300",
-          glow === "green" && "hover:shadow-neon-green border-transparent hover:border-[var(--neon-green)] transition-all duration-300",
+          glow === "blue" && "hover:shadow-[0_8px_30px_rgba(34,211,238,0.15)] border-transparent hover:border-cyan-500/50 transition-all duration-300",
+          glow === "green" && "hover:shadow-[0_8px_30px_rgba(74,222,128,0.15)] border-transparent hover:border-green-500/50 transition-all duration-300",
           className
         )}
         {...props}

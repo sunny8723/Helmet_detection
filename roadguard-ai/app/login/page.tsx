@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import { ShieldAlert, KeyRound, Mail, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { auth } from "@/lib/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,27 +16,24 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
-    // Simulate basic auth validation
-    setTimeout(() => {
-      if (email.includes("@") && password.length >= 4) {
-        localStorage.setItem("isAuthenticated", "true");
-        router.push("/dashboard");
-      } else {
-        setError("Invalid credentials. Please use any valid email & password.");
-        setIsLoading(false);
-      }
-    }, 1000);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push("/dashboard");
+    } catch (err: any) {
+      setError("Invalid credentials. Please provide valid email and password.");
+      setIsLoading(false);
+    }
   };
 
   return (
     <main className="flex-1 flex flex-col items-center justify-center relative w-full h-full p-6">
-      <div className="absolute top-1/4 left-1/4 w-[30%] h-[30%] bg-[var(--neon-blue)] opacity-[0.15] blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-[30%] h-[30%] bg-[var(--neon-green)] opacity-[0.1] blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 w-[30%] h-[30%] bg-blue-500 opacity-[0.08] blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-[30%] h-[30%] bg-cyan-500 opacity-[0.08] blur-[120px] rounded-full pointer-events-none" />
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -43,12 +42,12 @@ export default function LoginPage() {
         className="w-full max-w-md relative z-10"
       >
         <div className="flex flex-col items-center mb-8">
-          <ShieldAlert className="w-12 h-12 text-[var(--neon-blue)] drop-shadow-[0_0_15px_var(--neon-blue)] mb-4" />
-          <h1 className="text-3xl font-black text-white text-glow-blue">Secure Access</h1>
-          <p className="text-gray-400 mt-2 text-center">Sign in to access the RoadGuard AI Dashboard</p>
+          <ShieldAlert className="w-12 h-12 text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.2)] mb-4" />
+          <h1 className="text-3xl font-black text-white">Secure Access</h1>
+          <p className="text-gray-400 mt-2 text-center">Sign in to access the IndianRoad AI Dashboard</p>
         </div>
 
-        <Card glow="blue" className="p-8 bg-[#0a0a0a]/90 backdrop-blur-md border border-[var(--neon-blue)]/30">
+        <Card glow="blue" className="p-8 bg-[#0a0a0a]/90 backdrop-blur-md border border-white/5">
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-4">
               <div>
@@ -61,8 +60,8 @@ export default function LoginPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 bg-[#111] border border-gray-800 rounded-lg focus:ring-2 focus:ring-[var(--neon-blue)] focus:border-transparent text-white placeholder-gray-600 transition-all font-mono"
-                    placeholder="officer@roadguard.ai"
+                    className="block w-full pl-10 pr-3 py-3 bg-[#111] border border-gray-800 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white placeholder-gray-600 transition-all font-mono"
+                    placeholder="officer@indianroad.ai"
                     required
                   />
                 </div>
@@ -78,7 +77,7 @@ export default function LoginPage() {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 bg-[#111] border border-gray-800 rounded-lg focus:ring-2 focus:ring-[var(--neon-blue)] focus:border-transparent text-white placeholder-gray-600 transition-all font-mono"
+                    className="block w-full pl-10 pr-3 py-3 bg-[#111] border border-gray-800 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white placeholder-gray-600 transition-all font-mono"
                     placeholder="••••••••"
                     required
                   />
@@ -113,7 +112,7 @@ export default function LoginPage() {
             
             <div className="mt-4 pt-4 border-t border-gray-800 text-center">
               <p className="text-xs text-gray-500">
-                Demo Auth Mode Active. Enter any valid email and a 4+ character password.
+                Authorized personnel only. All access attempts are logged.
               </p>
             </div>
           </form>

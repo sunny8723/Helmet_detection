@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RoadGuard AI | Smart Traffic Dashboard",
+  title: "IndianRoad AI | Smart Traffic Dashboard",
   description: "AI-powered helmet and traffic violation detection system",
 };
 

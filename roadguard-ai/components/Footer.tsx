@@ -78,12 +78,12 @@ export function Footer() {
           This platform is an independent project and is <strong className="text-gray-400">not affiliated with or endorsed by any government authority</strong>. Links are provided for informational purposes only.
         </p>
         <div className="flex flex-col items-center md:items-end">
-          <a href="/team" className="mb-3 px-5 py-2 border border-[var(--neon-blue)]/30 text-[var(--neon-blue)] rounded-full hover:bg-[var(--neon-blue)]/10 hover:border-[var(--neon-blue)] transition-all font-medium text-sm flex items-center group relative overflow-hidden">
+          <a href="/team" className="mb-3 px-5 py-2 border border-blue-500/30 text-blue-400 rounded-full hover:bg-blue-500/10 hover:border-blue-500 transition-all font-medium text-sm flex items-center group relative overflow-hidden">
              <span className="relative z-10 tracking-wide text-white">Know Us</span>
-             <MoveRight className="w-4 h-4 ml-2 relative z-10 text-[var(--neon-blue)] group-hover:translate-x-1 transition-transform" />
+             <MoveRight className="w-4 h-4 ml-2 relative z-10 text-blue-400 group-hover:translate-x-1 transition-transform" />
           </a>
           <p className="font-mono text-[10px]">
-            © {new Date().getFullYear()} RoadGuard AI Team
+            © {new Date().getFullYear()} IndianRoad AI Team
           </p>
         </div>
       </div>

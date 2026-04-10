@@ -6,7 +6,8 @@ import { Camera, AlertTriangle, CheckCircle, Clock, Zap, Target, Activity, Refre
 import { Card } from "@/components/ui/Card";
 import { useRouter } from "next/navigation";
 import { collection, getDocs, query, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, auth } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 interface Violation {
   id: string;
@@ -26,12 +27,14 @@ export default function DashboardPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    const auth = localStorage.getItem("isAuthenticated");
-    if (!auth) {
-      router.push("/login");
-    } else {
-      setIsAuthenticated(true);
-    }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAuthenticated(true);
+      } else {
+        router.push("/login");
+      }
+    });
+    return () => unsubscribe();
   }, [router]);
 
   useEffect(() => {
@@ -85,7 +88,7 @@ export default function DashboardPage() {
   if (!isAuthenticated) {
     return (
       <main className="flex-1 p-6 relative w-full h-full flex flex-col items-center justify-center">
-         <div className="w-10 h-10 border-4 border-[var(--neon-blue)]/30 border-t-[var(--neon-blue)] rounded-full animate-spin"></div>
+         <div className="w-10 h-10 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"></div>
          <p className="mt-4 text-gray-400 font-mono text-sm animate-pulse tracking-widest">VERIFYING CREDENTIALS...</p>
       </main>
     );
@@ -100,7 +103,7 @@ export default function DashboardPage() {
       >
         <div>
           <h1 className="text-3xl font-black text-white">Live Monitoring</h1>
-          <p className="text-gray-400">RoadGuard AI System Status: <span className="text-[var(--neon-green)] font-medium">Online</span></p>
+          <p className="text-gray-400">IndianRoad AI System Status: <span className="text-green-400 font-medium">Online</span></p>
         </div>
       </motion.div>
 
@@ -111,22 +114,22 @@ export default function DashboardPage() {
         transition={{ delay: 0.1 }}
         className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-        <Card glow="blue" className="bg-[#0a0a0a]/80 border border-[var(--neon-blue)]/30 flex items-center p-5">
-           <Zap className="w-12 h-12 text-[var(--neon-blue)] mr-5 drop-shadow-[0_0_8px_var(--neon-blue)]" />
+        <Card glow="blue" className="bg-[#0a0a0a]/80 border border-cyan-500/30 flex items-center p-5">
+           <Zap className="w-12 h-12 text-cyan-400 mr-5" />
            <div>
              <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Avg Latency</p>
              <h3 className="text-3xl font-black text-white">{metrics.latency}s</h3>
            </div>
         </Card>
-        <Card glow="green" className="bg-[#0a0a0a]/80 border border-[var(--neon-green)]/30 flex items-center p-5">
-           <Target className="w-12 h-12 text-[var(--neon-green)] mr-5 drop-shadow-[0_0_8px_var(--neon-green)]" />
+        <Card glow="green" className="bg-[#0a0a0a]/80 border border-green-500/30 flex items-center p-5">
+           <Target className="w-12 h-12 text-green-400 mr-5" />
            <div>
              <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Accuracy</p>
              <h3 className="text-3xl font-black text-white">{metrics.accuracy}%</h3>
            </div>
         </Card>
         <Card glow="none" className="bg-[#0a0a0a]/80 border border-orange-500/30 flex items-center p-5">
-           <Activity className="w-12 h-12 text-orange-500 mr-5 drop-shadow-[0_0_8px_rgb(249,115,22)]" />
+           <Activity className="w-12 h-12 text-orange-500 mr-5" />
            <div>
              <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Total Violations</p>
              <h3 className="text-3xl font-black text-white">{metrics.total}</h3>
@@ -143,9 +146,9 @@ export default function DashboardPage() {
           transition={{ duration: 0.4 }}
           className="lg:col-span-2"
         >
-          <Card glow="blue" className="h-full min-h-[500px] flex flex-col relative overflow-hidden border border-[var(--neon-blue)]/30">
-            <div className="absolute top-4 left-4 z-10 flex items-center space-x-2 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg border border-[var(--neon-blue)]/50">
-              <span className="w-2 h-2 rounded-full bg-[var(--neon-green)] animate-pulse shadow-[0_0_10px_var(--neon-green)]" />
+          <Card glow="blue" className="h-full min-h-[500px] flex flex-col relative overflow-hidden border border-cyan-500/30">
+            <div className="absolute top-4 left-4 z-10 flex items-center space-x-2 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg border border-cyan-500/50">
+              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_10px_rgba(74,222,128,0.5)]" />
               <span className="text-sm font-bold text-white tracking-wider">CAM_01_MAIN_JUNCTION</span>
             </div>
             
@@ -177,7 +180,7 @@ export default function DashboardPage() {
               <img 
                 src="http://127.0.0.1:5000/video_feed" 
                 alt="Live Camera Feed" 
-                className="w-[95%] h-[95%] rounded border border-white/10 object-cover relative z-10 shadow-[0_0_20px_var(--neon-blue)]" 
+                className="w-[95%] h-[95%] rounded border border-white/10 object-cover relative z-10 shadow-lg" 
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                   const parent = e.currentTarget.parentElement;
@@ -217,10 +220,10 @@ export default function DashboardPage() {
               <button 
                 onClick={fetchViolations}
                 disabled={isRefreshing}
-                className="p-1.5 text-gray-400 hover:text-[var(--neon-blue)] transition-colors hover:bg-[var(--neon-blue)]/10 rounded-md focus:outline-none"
+                className="p-1.5 text-gray-400 hover:text-cyan-400 transition-colors hover:bg-cyan-500/10 rounded-md focus:outline-none"
                 aria-label="Refresh Data"
               >
-                <RefreshCcw className={`w-4 h-4 ${isRefreshing ? "animate-spin text-[var(--neon-blue)]" : ""}`} />
+                <RefreshCcw className={`w-4 h-4 ${isRefreshing ? "animate-spin text-cyan-400" : ""}`} />
               </button>
             </div>
             
@@ -240,10 +243,14 @@ export default function DashboardPage() {
                   >
                     {/* Thumbnail Placeholder */}
                     <div className="w-16 h-16 bg-black rounded-lg overflow-hidden relative border border-gray-800 group-hover:border-gray-600 transition-colors shrink-0">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Camera className="w-6 h-6 text-gray-700 group-hover:text-gray-400 transition-colors" />
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                      {v.image ? (
+                        <img src={v.image} alt={v.plate} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Camera className="w-6 h-6 text-gray-700 group-hover:text-gray-400 transition-colors" />
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
                     </div>
                     
                     <div className="flex-1 min-w-0">
@@ -265,7 +272,7 @@ export default function DashboardPage() {
               })}
             </div>
             
-            <button className="w-full mt-4 py-2.5 text-sm font-medium text-[var(--neon-blue)] hover:text-white border border-[var(--neon-blue)]/30 hover:bg-[var(--neon-blue)]/20 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-[var(--neon-blue)]/50">
+            <button className="w-full mt-4 py-2.5 text-sm font-medium text-cyan-400 hover:text-white border border-cyan-500/30 hover:bg-cyan-500/20 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-cyan-500/50">
               View All Events
             </button>
           </Card>
@@ -281,7 +288,7 @@ export default function DashboardPage() {
          <Card glow="none" className="p-0 overflow-hidden border border-gray-800 bg-[#0a0a0a]/90 backdrop-blur-md">
            <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-[#111]">
              <h3 className="font-bold flex items-center text-white">
-               <CheckCircle className="w-5 h-5 text-[var(--neon-green)] mr-2 drop-shadow-[0_0_5px_var(--neon-green)]" />
+               <CheckCircle className="w-5 h-5 text-green-400 mr-2" />
                Automated E-Challan Logs
              </h3>
              <span className="text-sm text-gray-400">System Logs</span>
@@ -318,13 +325,13 @@ export default function DashboardPage() {
                        <td className="px-6 py-4">
                          <div className="flex items-center">
                            <div className="w-20 h-1.5 bg-gray-800 rounded-full mr-3 overflow-hidden">
-                             <div className="h-full bg-[var(--neon-green)] rounded-full shadow-[0_0_8px_var(--neon-green)]" style={{ width: `${Math.round(v.confidence * 100)}%` }}></div>
+                             <div className="h-full bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.5)]" style={{ width: `${Math.round(v.confidence * 100)}%` }}></div>
                            </div>
-                           <span className="text-[var(--neon-green)] font-mono text-xs">{Math.round(v.confidence * 100)}%</span>
+                           <span className="text-green-400 font-mono text-xs">{Math.round(v.confidence * 100)}%</span>
                          </div>
                        </td>
                        <td className="px-6 py-4 text-right">
-                         <button className="px-3 py-1 text-xs font-medium text-[var(--neon-blue)] hover:text-white hover:bg-[var(--neon-blue)]/20 border border-transparent hover:border-[var(--neon-blue)]/30 rounded transition-all">Review</button>
+                         <button className="px-3 py-1 text-xs font-medium text-cyan-400 hover:text-white hover:bg-cyan-500/20 border border-transparent hover:border-cyan-500/30 rounded transition-all">Review</button>
                        </td>
                      </tr>
                     )

@@ -39,23 +39,7 @@ body {
   border: 1px solid var(--glass-border);
 }
 
-/* Neon Text Glow */
-.text-glow-blue {
-  text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
-}
-
-.text-glow-green {
-  text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
-}
-
-/* Neon Box Shadow Glow */
-.shadow-neon-blue {
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.4), inset 0 0 10px rgba(0, 240, 255, 0.2);
-}
-
-.shadow-neon-green {
-  box-shadow: 0 0 15px rgba(0, 255, 0, 0.4), inset 0 0 10px rgba(0, 255, 0, 0.2);
-}
+/* Removed neon classes in favor of Tailwind drop shadows and gradients */
 
 /* Hide scrollbar for a cleaner dashboard look */
 ::-webkit-scrollbar {

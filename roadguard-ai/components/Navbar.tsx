@@ -5,6 +5,8 @@ import { ShieldAlert } from "lucide-react";
 import { Button } from "./ui/Button";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { auth } from "@/lib/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 export function Navbar() {
   const router = useRouter();
@@ -13,18 +15,15 @@ export function Navbar() {
 
   useEffect(() => {
     setIsMounted(true);
-    const checkAuth = () => {
-      setIsAuthenticated(localStorage.getItem("isAuthenticated") === "true");
-    };
-    checkAuth();
-    const interval = setInterval(checkAuth, 1000);
-    return () => clearInterval(interval);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(!!user);
+    });
+    return () => unsubscribe();
   }, []);
 
-  const handleAuthAction = () => {
+  const handleAuthAction = async () => {
     if (isAuthenticated) {
-      localStorage.removeItem("isAuthenticated");
-      setIsAuthenticated(false);
+      await signOut(auth);
       router.push("/");
     } else {
       router.push("/login");
@@ -32,16 +31,16 @@ export function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 w-full z-50 glass-panel border-b-0 border-b-[rgba(255,255,255,0.05)] px-6 py-4 backdrop-blur-xl bg-[#0a0a0a]/80">
+    <nav className="sticky top-0 w-full z-50 px-6 py-4 backdrop-blur-lg bg-black/40 border-b border-white/5 transition-all duration-300">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link href="/" className="flex items-center space-x-3 group">
-          <ShieldAlert className="w-8 h-8 text-[var(--neon-blue)] group-hover:drop-shadow-[0_0_10px_var(--neon-blue)] transition-all" />
-          <span className="text-xl font-bold tracking-wider text-white text-glow-blue">
-            RoadGuard<span className="text-[var(--neon-green)] text-glow-green">.AI</span>
+          <ShieldAlert className="w-8 h-8 text-cyan-400 group-hover:text-blue-400 transition-colors" />
+          <span className="text-xl font-bold tracking-wider text-white">
+            IndianRoad<span className="bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">.AI</span>
           </span>
         </Link>
         <div className="flex items-center space-x-6">
-          <Link href="/dashboard" className="text-sm font-medium text-gray-300 hover:text-[var(--neon-blue)] transition-colors">
+          <Link href="/dashboard" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
             Dashboard
           </Link>
           {isMounted && (

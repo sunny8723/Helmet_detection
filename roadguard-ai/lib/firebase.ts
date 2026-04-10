@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDq_d4KJWeE3ifjQjwjvMRfgbULII9mpTY",
@@ -14,8 +14,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-// Analytics uses client-side document/window, only initialize if window is defined
-const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
-
-export { app, analytics, db };
+export { app, db, auth };
