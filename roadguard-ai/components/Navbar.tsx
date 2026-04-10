@@ -35,15 +35,15 @@ export function Navbar() {
     <nav className="sticky top-0 w-full z-50 px-6 py-4 backdrop-blur-lg bg-black/40 border-b border-white/5 transition-all duration-300">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link href="/" className="flex items-center space-x-3 group">
-          <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-[0_0_15px_rgba(34,211,238,0.3)] group-hover:shadow-[0_0_20px_rgba(34,211,238,0.5)] group-hover:scale-105 transition-all duration-300 border border-cyan-500/20">
+          <div className="relative w-12 h-12 rounded-xl overflow-hidden shadow-[0_0_15px_rgba(34,211,238,0.3)] group-hover:shadow-[0_0_20px_rgba(34,211,238,0.5)] group-hover:scale-105 transition-all duration-300 border border-cyan-500/30 bg-black">
             <Image 
               src="/photo/IndianRoad.AI digital logo design.png" 
               alt="IndianRoad AI Logo" 
               fill
-              className="object-cover"
+              className="object-cover scale-[1.6]"
             />
           </div>
-          <span className="text-xl font-bold tracking-wider text-white">
+          <span className="text-2xl font-black tracking-wider text-white">
             IndianRoad<span className="bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">.AI</span>
           </span>
         </Link>

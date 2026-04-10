@@ -104,12 +104,11 @@ export default function Home() {
             src="/photo/hero-bg.jpg" 
             alt="City Traffic" 
             fill
-            className="object-cover"
-            style={{ filter: "brightness(0.6) contrast(1.1)" }}
+            className="object-cover opacity-40"
             priority
           />
           {/* Dark Overlay Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-[#050505]/95" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/20 to-[#050505]" />
         </motion.div>
       </motion.div>
 
