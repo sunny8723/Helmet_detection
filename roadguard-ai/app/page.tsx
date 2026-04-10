@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, Variants, useScroll, useTransform } from "framer-motion";
-import { Shield, Camera, Bell, Activity, ArrowRight, Eye, ScanSearch, CheckCircle } from "lucide-react";
+import { Shield, Camera, Bell, Activity, ArrowRight, Eye, ScanSearch, CheckCircle, Database, Image, Type, Gauge, Flag, Calendar, Cpu, Layers, LayoutDashboard, Target } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useState, useEffect } from "react";
@@ -318,6 +318,103 @@ export default function Home() {
              </Link>
           </motion.div>
         </motion.div>
+      </section>
+
+      {/* CHALLENGES SECTION */}
+      <section className="py-24 px-6 relative z-10 max-w-7xl mx-auto w-full overflow-hidden">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, margin: "-10%" }}
+          variants={scrollVariants}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">Challenges We <span className="text-cyan-400">Faced</span></h2>
+          <p className="text-gray-400 max-w-2xl mx-auto">Overcoming technical hurdles to build a robust safety enforcement system.</p>
+        </motion.div>
+
+        <motion.div
+           variants={staggerContainer}
+           initial="hidden"
+           whileInView="visible"
+           viewport={{ once: false, margin: "-10%" }}
+           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
+          {[
+            { title: "Limited Dataset", desc: "Initially had very small dataset for helmet detection", icon: Database },
+            { title: "Data Quality Issues", desc: "Variations in lighting, angles, and occlusions affected accuracy", icon: Image },
+            { title: "OCR Accuracy Challenges", desc: "Number plate recognition inconsistent in low-light or motion blur", icon: Type },
+            { title: "Real-time Performance", desc: "Balancing detection accuracy with low latency was difficult", icon: Gauge },
+          ].map((challenge, idx) => (
+            <motion.div key={idx} variants={scrollVariants}>
+              <Card glow="none" className="h-full border border-white/5 bg-white/5 backdrop-blur-sm p-6 hover:-translate-y-2 hover:border-cyan-500/30 transition-all duration-300">
+                <challenge.icon className="w-10 h-10 text-cyan-400 mb-4 opacity-80" />
+                <h3 className="text-xl font-bold text-white mb-2">{challenge.title}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed">{challenge.desc}</p>
+              </Card>
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
+
+      {/* PROJECT JOURNEY SECTION */}
+      <section className="py-24 px-6 relative z-10 w-full overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, margin: "-10%" }}
+            variants={scrollVariants}
+            className="text-center mb-20"
+          >
+            <p className="text-cyan-400 font-mono text-xs tracking-widest uppercase mb-4">From Idea to Implementation</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-white">Project <span className="bg-gradient-to-r from-blue-400 to-cyan-500 text-transparent bg-clip-text">Journey</span></h2>
+          </motion.div>
+
+          <div className="relative">
+            {/* Timeline Line */}
+            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent transform -translate-y-1/2 hidden md:block" />
+            
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-8 relative z-10">
+              {[
+                { month: "July", detail: "Mid", desc: "Project planning started", icon: Flag },
+                { month: "September", detail: "", desc: "Topic finalized", icon: Target },
+                { month: "October", detail: "Mid", desc: "Dataset collection", icon: Database },
+                { month: "December", detail: "Mid", desc: "Model training", icon: Cpu },
+                { month: "March", detail: "Mid", desc: "Dataset expansion", icon: Layers },
+                { month: "April", detail: "1", desc: "Website development", icon: LayoutDashboard },
+              ].map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  variants={scrollVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, margin: "-10%" }}
+                  className={`flex flex-col items-center ${idx % 2 === 0 ? "md:flex-col" : "md:flex-col-reverse"}`}
+                >
+                  <div className={`w-full ${idx % 2 === 0 ? "mb-8" : "mt-8"} hidden md:block h-32`}>
+                    <Card glow="none" className="bg-[#0a0a0a]/60 border border-white/10 p-4 text-center h-full flex flex-col justify-center hover:border-cyan-500/40 transition-colors">
+                      <p className="text-cyan-400 text-xs font-bold mb-1">{item.month} {item.detail}</p>
+                      <p className="text-gray-300 text-xs leading-snug">{item.desc}</p>
+                    </Card>
+                  </div>
+
+                  <div className="relative flex items-center justify-center">
+                    <div className="w-4 h-4 rounded-full bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.8)] z-20" />
+                    <div className="absolute w-8 h-8 rounded-full bg-cyan-500/20 animate-ping" />
+                  </div>
+
+                  <div className={`w-full mt-4 md:hidden`}>
+                    <Card glow="none" className="bg-[#0a0a0a]/60 border border-white/10 p-4 text-center">
+                      <p className="text-cyan-400 text-sm font-bold mb-1">{item.month} {item.detail}</p>
+                      <p className="text-gray-300 text-sm">{item.desc}</p>
+                    </Card>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* SYSTEM IN ACTION / DEPLOYMENT */}
