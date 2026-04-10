@@ -86,6 +86,16 @@ export default function Home() {
     visible: { transition: { staggerChildren: 0.15 } }
   };
 
+  const timelineVariants: Variants = {
+    hidden: { opacity: 0, scale: 0.9, y: 20 },
+    visible: { 
+      opacity: 1, 
+      scale: 1, 
+      y: 0, 
+      transition: { duration: 0.5, ease: "easeOut" } 
+    }
+  };
+
   return (
     <main className="flex-1 flex flex-col relative w-full mb-10 overflow-hidden bg-[#050505]">
 
@@ -387,10 +397,10 @@ export default function Home() {
                 ].map((item, idx) => (
                   <motion.div
                     key={idx}
-                    variants={scrollVariants}
+                    variants={timelineVariants}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: false, margin: "-10%" }}
+                    viewport={{ once: true, amount: 0.1 }}
                     className="relative flex flex-col items-center justify-center h-full"
                   >
                     {/* Desktop Card (Alternating) */}
