@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Camera, AlertTriangle, CheckCircle, Clock, Zap, Target, Activity, RefreshCcw } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { useRouter } from "next/navigation";
-import { collection, getDocs, query } from "firebase/firestore";
+import { collection, getDocs, query, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 interface Violation {
@@ -34,12 +34,14 @@ export default function DashboardPage() {
     }
   }, [router]);
 
-  const fetchViolations = async () => {
+  useEffect(() => {
     if (!isAuthenticated) return;
-    try {
-      setIsRefreshing(true);
-      const q = query(collection(db, "violations"));
-      const querySnapshot = await getDocs(q);
+
+    setIsRefreshing(true);
+    const q = query(collection(db, "violations"));
+    
+    // Set up a real-time listener
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const data: Violation[] = [];
       querySnapshot.forEach((doc) => {
         data.push({ id: doc.id, ...doc.data() } as Violation);
@@ -57,11 +59,21 @@ export default function DashboardPage() {
       } else {
         setMetrics({ latency: 0, accuracy: 0, total: 0 });
       }
-    } catch (err) {
-      console.error("Could not fetch violations from Firebase:", err);
-    } finally {
       setIsRefreshing(false);
-    }
+    }, (err) => {
+      console.error("Could not fetch violations from Firebase:", err);
+      setIsRefreshing(false);
+    });
+
+    // Cleanup the listener when the component unmounts
+    return () => unsubscribe();
+  }, [isAuthenticated]);
+
+  const fetchViolations = () => {
+    // We keep this function stub for the refresh button, but it's largely unnecessary now
+    // as onSnapshot handles updates automatically. We can play an animation.
+    setIsRefreshing(true);
+    setTimeout(() => setIsRefreshing(false), 500);
   };
 
   useEffect(() => {
