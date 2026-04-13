@@ -1,13 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050505; /* Pitch black */
+  --background: #050505;
+  /* Pitch black */
   --foreground: #e0e0e0;
-  
+
   --neon-blue: #00f0ff;
   --neon-green: #00ff00;
   --neon-purple: #b026ff;
-  
+
   --glass-bg: rgba(20, 20, 20, 0.6);
   --glass-border: rgba(255, 255, 255, 0.1);
 }
@@ -45,13 +46,16 @@ body {
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #050505; 
+  background: #050505;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #222; 
+  background: #222;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--neon-blue); 
+  background: var(--neon-blue);
 }

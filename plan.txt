@@ -1,0 +1,3 @@
+Plan:
+1. Load helmet_best.pt and numberplate_best.pt in main.py.
+2. Update page.tsx to use test4.png.

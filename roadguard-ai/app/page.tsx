@@ -283,7 +283,7 @@ export default function Home() {
               <Card glow="blue" spotlightColor="rgba(34,211,238,0.15)" className="h-full flex flex-col justify-end min-h-[300px] p-8 border border-cyan-500/20 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-cyan-950/40 via-[#111] to-[#111]">
                 <ScanSearch className="w-10 h-10 text-cyan-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
                 <h3 className="text-2xl font-bold text-white mb-2">Autonomous Helmet Detection</h3>
-                <p className="text-gray-400 mb-8">YOLOv8 scanning 60fps live feeds instantly penalizing offenders at edge speed.</p>
+                <p className="text-gray-400 mb-8">YOLOv8 scanning 8.5 FPS live feeds with 91% helmet detection precision.</p>
                 <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-cyan-400 font-bold text-sm">
                   Explore Technology <ArrowRight className="w-4 h-4 ml-2" />
                 </div>
@@ -343,7 +343,7 @@ export default function Home() {
           </motion.div>
         </motion.div>
       </section>
-      
+
       {/* AI PLAYGROUND SECTION */}
       <section id="playground" className="py-24 px-6 relative z-10 max-w-7xl mx-auto w-full overflow-hidden">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -358,97 +358,98 @@ export default function Home() {
               Our YOLOv8 custom models aren't just software; they're digital eagle eyes. Click below to see how the system identifies violations in a fraction of a second.
             </p>
             <div className="space-y-4">
-               {[
-                 { title: "Object Detection", detail: "YOLOv8 Real-time Engine" },
-                 { title: "Confidence Scoring", detail: "98.4% Mean Accuracy" },
-                 { title: "Instant Classification", detail: "Helmet vs No-Helmet" }
-               ].map((feat, i) => (
-                 <div key={i} className="flex items-center space-x-3 text-gray-300">
-                    <CheckCircle className="w-5 h-5 text-cyan-400" />
-                    <span><strong className="text-white">{feat.title}:</strong> {feat.detail}</span>
-                 </div>
-               ))}
+              {[
+                { title: "Object Detection", detail: "YOLOv8 Performance Engine" },
+                { title: "Confidence Scoring", detail: "90.7% Helmet mAP" },
+                { title: "Inference Latency", detail: "117ms per Frame" }
+              ].map((feat, i) => (
+                <div key={i} className="flex items-center space-x-3 text-gray-300">
+                  <CheckCircle className="w-5 h-5 text-cyan-400" />
+                  <span><strong className="text-white">{feat.title}:</strong> {feat.detail}</span>
+                </div>
+              ))}
             </div>
-            <Button 
-               onClick={() => {
-                 setIsScanning(true);
-                 setTimeout(() => { setIsScanning(false); setScanComplete(true); }, 2000);
-               }}
-               className="mt-10 bg-cyan-500 hover:bg-cyan-400 text-black font-black px-8 py-4 rounded-xl shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all active:scale-95"
+            <Button
+              onClick={() => {
+                setIsScanning(true);
+                setTimeout(() => { setIsScanning(false); setScanComplete(true); }, 2000);
+              }}
+              className="mt-10 bg-cyan-500 hover:bg-cyan-400 text-black font-black px-8 py-4 rounded-xl shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all active:scale-95"
             >
-               {scanComplete ? "Rescan Environment" : "Start Live AI Scan"}
+              {scanComplete ? "Rescan Environment" : "Start Live AI Scan"}
             </Button>
           </motion.div>
 
           <Card className="p-0 overflow-hidden aspect-video relative border-cyan-500/30 group bg-black shadow-2xl">
-              {/* Sample Street Image */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
-                src="/photo/indian-road-2.jpg" 
-                alt="AI Playground Scene" 
-                className={`w-full h-full object-cover transition-all duration-1000 ${isScanning ? "brightness-50 grayscale" : "brightness-75 group-hover:brightness-100"}`} 
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
-              />
-              
-              {/* Scanning Laser Line */}
-              <AnimatePresence>
-                {isScanning && (
-                  <motion.div 
-                    initial={{ top: "0%" }}
-                    animate={{ top: "100%" }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 2, ease: "linear" }}
-                    className="absolute left-0 w-full h-1 bg-cyan-400 shadow-[0_0_20px_rgb(34,211,238)] z-20"
-                  />
-                )}
-              </AnimatePresence>
+            {/* Sample Street Image */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/photo/test4.png"
+              alt="AI Playground Scene"
+              className={`w-full h-full object-cover transition-all duration-1000 ${isScanning ? "brightness-50 grayscale" : "brightness-75 group-hover:brightness-100"}`}
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
 
-              {/* Detection Box Simulation */}
-              <AnimatePresence>
-                {scanComplete && !isScanning && (
-                   <>
-                     {/* Bounding Box 1 */}
-                     <motion.div 
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="absolute top-[30%] left-[40%] w-[120px] h-[150px] border-2 border-red-500 z-30 flex flex-col justify-start"
-                     >
-                        <span className="bg-red-500 text-white text-[10px] font-black px-1.5 py-0.5 uppercase tracking-tighter">VIOLATION: No Helmet</span>
-                        <span className="bg-black/60 text-white text-[8px] px-1 font-mono">Conf: 0.98</span>
-                     </motion.div>
+            {/* Scanning Laser Line */}
+            <AnimatePresence>
+              {isScanning && (
+                <motion.div
+                  initial={{ top: "0%" }}
+                  animate={{ top: "100%" }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 2, ease: "linear" }}
+                  className="absolute left-0 w-full h-1 bg-cyan-400 shadow-[0_0_20px_rgb(34,211,238)] z-20"
+                />
+              )}
+            </AnimatePresence>
 
-                     {/* Bounding Box 2 */}
-                     <motion.div 
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.2 }}
-                        className="absolute bottom-[20%] right-[30%] w-[100px] h-[60px] border-2 border-cyan-500 z-30 flex flex-col justify-end"
-                     >
-                        <span className="bg-black/60 text-white text-[8px] px-1 font-mono text-right">Plate: WB 02 A 1234</span>
-                        <span className="bg-cyan-500 text-black text-[10px] font-black px-1.5 py-0.5 uppercase tracking-tighter text-right">Target: Number Plate</span>
-                     </motion.div>
+            {/* Detection Box Simulation */}
+            <AnimatePresence>
+              {scanComplete && !isScanning && (
+                <>
+                  {/* Bounding Box 1 - Head */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="absolute top-[12%] left-[44%] w-[80px] h-[100px] border-2 border-green-500 z-30 flex flex-col justify-start"
+                  >
+                    <span className="bg-green-500 text-black text-[10px] font-black px-1.5 py-0.5 uppercase tracking-tighter">Helmet: OK</span>
+                    <span className="bg-black/60 text-white text-[8px] px-1 font-mono">Conf: 0.98</span>
+                  </motion.div>
 
-                     {/* Data Streaming Overlay */}
-                     <div className="absolute inset-0 pointer-events-none opacity-20">
-                        <div className="absolute top-4 left-4 font-mono text-[8px] text-cyan-400 space-y-1">
-                           <p>LAT: 22.5726</p>
-                           <p>LONG: 88.3639</p>
-                           <p>TEMP: 32C</p>
-                        </div>
-                     </div>
-                   </>
-                )}
-              </AnimatePresence>
+                  {/* Bounding Box 2 - Plate */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="absolute top-[68%] left-[43%] w-[100px] h-[60px] border-2 border-cyan-500 z-30 flex flex-col justify-end"
+                  >
+                    <span className="bg-black/60 text-white text-[8px] px-1 font-mono text-right">Plate: MH 12 AB 1234</span>
+                    <span className="bg-cyan-500 text-black text-[10px] font-black px-1.5 py-0.5 uppercase tracking-tighter text-right">Plate: DETECTED</span>
+                  </motion.div>
 
-              {/* Status Indicator */}
-              <div className="absolute bottom-4 right-4 bg-black/80 px-3 py-1.5 rounded-lg border border-white/10 flex items-center space-x-2">
-                 <div className={`w-2 h-2 rounded-full ${isScanning ? "bg-yellow-500 animate-pulse" : scanComplete ? "bg-green-500" : "bg-white/20"}`} />
-                 <span className="text-[10px] font-mono text-white/70 uppercase tracking-widest leading-none">
-                    {isScanning ? "Processing..." : scanComplete ? "Detections Found" : "Standby"}
-                 </span>
-              </div>
+                  {/* Data Streaming Overlay */}
+                  <div className="absolute inset-0 pointer-events-none opacity-20">
+                    <div className="absolute top-4 left-4 font-mono text-[8px] text-cyan-400 space-y-1">
+                      <p>LAT: 22.5726</p>
+                      <p>LONG: 88.3639</p>
+                      <p>TEMP: 32C</p>
+                    </div>
+                  </div>
+                </>
+              )}
+            </AnimatePresence>
+
+            {/* Status Indicator */}
+            <div className="absolute bottom-4 right-4 bg-black/80 px-3 py-1.5 rounded-lg border border-white/10 flex items-center space-x-2">
+              <div className={`w-2 h-2 rounded-full ${isScanning ? "bg-yellow-500 animate-pulse" : scanComplete ? "bg-green-500" : "bg-white/20"}`} />
+              <span className="text-[10px] font-mono text-white/70 uppercase tracking-widest leading-none">
+                {isScanning ? "Processing..." : scanComplete ? "Detections Found" : "Standby"}
+              </span>
+            </div>
           </Card>
         </div>
+      </section>
 
       {/* CHALLENGES SECTION */}
       <section id="challenges" className="py-24 px-6 relative z-10 max-w-7xl mx-auto w-full overflow-hidden">
@@ -604,77 +605,77 @@ export default function Home() {
           </motion.div>
         </div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           className="max-w-5xl mx-auto"
         >
           <div className="grid md:grid-cols-2 gap-1 px-4 md:px-0">
-             {/* MANUAL VIEW */}
-             <div className="relative group overflow-hidden rounded-l-2xl border-y border-l border-white/10">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/photo/indian-road-1.jpg" alt="Manual Monitoring" className="w-full h-[400px] object-cover grayscale opacity-50" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-8 text-center">
-                   <AlertTriangle className="w-12 h-12 text-gray-500 mb-4" />
-                   <h3 className="text-2xl font-bold text-gray-400 uppercase tracking-tighter">Manual Monitoring</h3>
-                   <p className="text-gray-500 text-sm mt-2 font-mono">Inefficient • High Error Rate • Limited Reach</p>
-                </div>
-                <div className="absolute top-4 left-4 py-1 px-3 bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest">传统 - TRADITIONAL</div>
-             </div>
+            {/* MANUAL VIEW */}
+            <div className="relative group overflow-hidden rounded-l-2xl border-y border-l border-white/10">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/photo/test4.png" alt="Manual Monitoring" className="w-full h-[400px] object-cover grayscale opacity-50" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+              <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-8 text-center">
+                <AlertTriangle className="w-12 h-12 text-gray-500 mb-4" />
+                <h3 className="text-2xl font-bold text-gray-400 uppercase tracking-tighter">Manual Monitoring</h3>
+                <p className="text-gray-500 text-sm mt-2 font-mono">Inefficient • High Error Rate • Limited Reach</p>
+              </div>
+              <div className="absolute top-4 left-4 py-1 px-3 bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest">TRADITIONAL</div>
+            </div>
 
-             {/* AI VIEW */}
-             <div className="relative group overflow-hidden rounded-r-2xl border-y border-r border-cyan-500/30 shadow-[20px_0_50px_-10px_rgba(6,182,212,0.15)]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/photo/indian-road-1.jpg" alt="AI Monitoring" className="w-full h-[400px] object-cover opacity-80" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                <div className="absolute inset-0 bg-gradient-to-t from-cyan-950/40 to-transparent flex flex-col items-center justify-center p-8 text-center">
-                   <Zap className="w-12 h-12 text-cyan-400 mb-4 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
-                   <h3 className="text-2xl font-bold text-white uppercase tracking-tighter">IndianRoad<span className="text-cyan-400">.AI</span></h3>
-                   <p className="text-cyan-200/60 text-sm mt-2 font-mono">98% Accuracy • Instant Ticketing • 24/7 Ops</p>
+            {/* AI VIEW */}
+            <div className="relative group overflow-hidden rounded-r-2xl border-y border-r border-cyan-500/30 shadow-[20px_0_50px_-10px_rgba(6,182,212,0.15)]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/photo/test4.png" alt="AI Monitoring" className="w-full h-[400px] object-cover opacity-80" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+              <div className="absolute inset-0 bg-gradient-to-t from-cyan-950/40 to-transparent flex flex-col items-center justify-center p-8 text-center">
+                <Zap className="w-12 h-12 text-cyan-400 mb-4 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
+                <h3 className="text-2xl font-bold text-white uppercase tracking-tighter">IndianRoad<span className="text-cyan-400">.AI</span></h3>
+                <p className="text-cyan-200/60 text-sm mt-2 font-mono">91% Helmet Accuracy • Instant Ticketing • 24/7 Ops</p>
 
-                   {/* Simulated Bounding Boxes */}
-                   <div className="absolute top-[20%] left-[20%] w-24 h-24 border-2 border-green-500 rounded sm:flex hidden flex-col">
-                      <span className="bg-green-500 text-black text-[8px] font-black px-1 uppercase">Helmet: OK</span>
-                   </div>
-                   <div className="absolute bottom-[30%] right-[25%] w-32 h-12 border-2 border-cyan-500 rounded sm:flex hidden flex-col justify-end">
-                      <span className="bg-cyan-500 text-black text-[8px] font-black px-1 uppercase w-fit">Plate: DETECTED</span>
-                   </div>
+                {/* Simulated Bounding Boxes - Adjusted for test4.png */}
+                <div className="absolute top-[12%] left-[44%] w-20 h-24 border-2 border-green-500 rounded sm:flex hidden flex-col">
+                  <span className="bg-green-500 text-black text-[8px] font-black px-1 uppercase">Helmet: OK</span>
                 </div>
-                <div className="absolute top-4 right-4 py-1 px-3 bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 text-[10px] font-black uppercase tracking-widest animate-pulse">AUTONOMOUS MODE</div>
-             </div>
+                <div className="absolute top-[68%] left-[43%] w-24 h-12 border-2 border-cyan-500 rounded sm:flex hidden flex-col justify-end">
+                  <span className="bg-cyan-500 text-black text-[8px] font-black px-1 uppercase w-fit">Plate: DETECTED</span>
+                </div>
+              </div>
+              <div className="absolute top-4 right-4 py-1 px-3 bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 text-[10px] font-black uppercase tracking-widest animate-pulse">AUTONOMOUS MODE</div>
+            </div>
           </div>
         </motion.div>
       </section>
 
       {/* SYSTEM ARCHITECTURE SECTION */}
       <section className="py-24 px-6 relative z-10 max-w-7xl mx-auto w-full">
-         <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white">How the <span className="text-cyan-400">Engine</span> Works</h2>
-            <p className="text-gray-500 mt-2 tracking-wide font-mono text-sm uppercase">Cloud-Edge Hybrid Enforcement Pipeline</p>
-         </div>
+        <div className="text-center mb-16">
+          <h2 className="text-3xl font-bold text-white">How the <span className="text-cyan-400">Engine</span> Works</h2>
+          <p className="text-gray-500 mt-2 tracking-wide font-mono text-sm uppercase">Cloud-Edge Hybrid Enforcement Pipeline</p>
+        </div>
 
-         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {[
-              { title: "Capture", desc: "Edge devices stream 4K frames to the cloud engine.", icon: Camera, color: "blue" },
-              { title: "Identify", desc: "YOLOv8 detects helmets & number plate ROI.", icon: ScanSearch, color: "green" },
-              { title: "Validate", desc: "Firestore syncs violation history instantly.", icon: Database, color: "blue" },
-              { title: "Enforce", desc: "E-Challan generated & pushed to Dashboard.", icon: Bell, color: "red" },
-            ].map((step, idx) => (
-              <div key={idx} className="relative">
-                <Card glow="none" className="h-full border border-white/5 bg-white/5 hover:bg-white/10 transition-colors p-8 text-center">
-                   <div className={`w-14 h-14 mx-auto mb-6 rounded-2xl bg-black border border-white/10 flex items-center justify-center`}>
-                      <step.icon className={`w-7 h-7 ${idx % 2 === 0 ? "text-cyan-400" : "text-green-400"}`} />
-                   </div>
-                   <h4 className="text-white font-bold mb-2">{idx + 1}. {step.title}</h4>
-                   <p className="text-gray-500 text-sm">{step.desc}</p>
-                </Card>
-                {idx < 3 && (
-                   <div className="absolute top-1/2 -right-4 -translate-y-1/2 hidden md:block z-20">
-                      <ChevronRight className="w-8 h-8 text-white/10" />
-                   </div>
-                )}
-              </div>
-            ))}
-         </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {[
+            { title: "Capture", desc: "Edge devices stream 4K frames to the cloud engine.", icon: Camera, color: "blue" },
+            { title: "Identify", desc: "YOLOv8 detects helmets & number plate ROI.", icon: ScanSearch, color: "green" },
+            { title: "Validate", desc: "Firestore syncs violation history instantly.", icon: Database, color: "blue" },
+            { title: "Enforce", desc: "E-Challan generated & pushed to Dashboard.", icon: Bell, color: "red" },
+          ].map((step, idx) => (
+            <div key={idx} className="relative">
+              <Card glow="none" className="h-full border border-white/5 bg-white/5 hover:bg-white/10 transition-colors p-8 text-center">
+                <div className={`w-14 h-14 mx-auto mb-6 rounded-2xl bg-black border border-white/10 flex items-center justify-center`}>
+                  <step.icon className={`w-7 h-7 ${idx % 2 === 0 ? "text-cyan-400" : "text-green-400"}`} />
+                </div>
+                <h4 className="text-white font-bold mb-2">{idx + 1}. {step.title}</h4>
+                <p className="text-gray-500 text-sm">{step.desc}</p>
+              </Card>
+              {idx < 3 && (
+                <div className="absolute top-1/2 -right-4 -translate-y-1/2 hidden md:block z-20">
+                  <ChevronRight className="w-8 h-8 text-white/10" />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </section>
 
     </main>
