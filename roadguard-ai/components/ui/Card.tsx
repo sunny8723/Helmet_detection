@@ -28,10 +28,10 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         ref={ref}
         onMouseMove={handleMouseMove}
         className={cn(
-          "rounded-2xl p-6 relative overflow-hidden group",
-          glass ? "bg-white/5 backdrop-blur-md border border-white/10" : "bg-[#111] border border-[#333]",
-          glow === "blue" && "border-white/10 hover:border-cyan-500/40 transition-colors duration-300 shadow-none hover:shadow-[0_0_20px_rgba(34,211,238,0.1)]",
-          glow === "green" && "border-white/10 hover:border-green-500/40 transition-colors duration-300 shadow-none hover:shadow-[0_0_20px_rgba(74,222,128,0.1)]",
+          "rounded-2xl p-6 relative overflow-hidden group transition-all duration-500",
+          glass ? "bg-glass backdrop-blur-md border border-glass-border" : "bg-card border border-border shadow-sm dark:shadow-none",
+          glow === "blue" && "border-glass-border hover:border-cyan-500/40 transition-colors duration-300 shadow-none hover:shadow-xl dark:hover:shadow-[0_0_20px_rgba(34,211,238,0.1)]",
+          glow === "green" && "border-glass-border hover:border-green-500/40 transition-colors duration-300 shadow-none hover:shadow-xl dark:hover:shadow-[0_0_20px_rgba(74,222,128,0.1)]",
           className
         )}
         {...props}

@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 };
 
 import { SideNav } from "@/components/SideNav";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export default function RootLayout({
   children,
@@ -29,15 +30,18 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased transition-colors duration-300`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-[#050505] text-white overflow-x-hidden">
-        <SideNav />
-        <Navbar />
-        <div className="pt-20 flex-1 flex flex-col">
-          {children}
-        </div>
-        <Footer />
+      <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden transition-colors duration-300">
+        <ThemeProvider>
+          <SideNav />
+          <Navbar />
+          <div className="pt-20 flex-1 flex flex-col">
+            {children}
+          </div>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

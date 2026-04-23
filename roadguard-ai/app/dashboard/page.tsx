@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Camera, AlertTriangle, CheckCircle, Clock, Zap, Target, Activity, RefreshCcw } from "lucide-react";
+import { Camera, AlertTriangle, CheckCircle, Clock, Zap, Target, Activity, RefreshCcw, History, ShieldAlert } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { useRouter } from "next/navigation";
 import { collection, getDocs, query, onSnapshot } from "firebase/firestore";
@@ -25,6 +25,10 @@ export default function DashboardPage() {
   const [metrics, setMetrics] = useState({ latency: 0, accuracy: 0, total: 0 });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [cameraActive, setCameraActive] = useState(false);
+  const [detections, setDetections] = useState<any[]>([]);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -80,6 +84,73 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
+    if (!isAuthenticated) return;
+
+    let interval: NodeJS.Timeout;
+
+    const startCamera = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { width: 1280, height: 720 } 
+        });
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          setCameraActive(true);
+        }
+      } catch (err) {
+        console.error("Error accessing webcam:", err);
+      }
+    };
+
+    const runInference = async () => {
+      if (!videoRef.current || !canvasRef.current || !cameraActive) return;
+
+      const canvas = canvasRef.current;
+      const video = videoRef.current;
+      const ctx = canvas.getContext("2d");
+      if (!ctx || video.videoWidth === 0) return;
+
+      // Optimize: 640px is the native resolution for YOLO, making it 4x faster than 720p
+      canvas.width = 640;
+      canvas.height = 480;
+      
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageBase64 = canvas.toDataURL("image/jpeg", 0.5); // Fast compression
+
+      try {
+        const response = await fetch("http://127.0.0.1:5000/detect", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: imageBase64 }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.detections) setDetections(data.detections);
+        }
+      } catch (err) {
+        console.error("Inference Error:", err);
+      } finally {
+        // Adaptive polling: Only send the next frame once the current one is done
+        if (cameraActive) {
+          interval = setTimeout(runInference, 80); // Targeting ~12 FPS
+        }
+      }
+    };
+
+    startCamera();
+    runInference();
+
+    return () => {
+      clearTimeout(interval);
+      if (videoRef.current?.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [isAuthenticated, cameraActive]);
+
+  useEffect(() => {
     if (isAuthenticated) {
       fetchViolations();
     }
@@ -104,6 +175,9 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-3xl font-black text-white">Live Monitoring</h1>
           <p className="text-gray-400">IndianRoad AI System Status: <span className="text-green-400 font-medium">Online</span></p>
+        </div>
+        <div className="text-xs font-mono text-gray-500 bg-gray-900/50 px-2 py-1 rounded border border-gray-800">
+           Inference: {detections.length > 0 ? <span className="text-green-400">ACTIVE</span> : <span className="text-gray-600">IDLE</span>} | API: 127.0.0.1:5000
         </div>
       </motion.div>
 
@@ -180,50 +254,76 @@ export default function DashboardPage() {
               <span className="text-sm font-bold font-mono tracking-widest text-red-500 animate-pulse">REC</span>
             </div>
 
-            {/* Simulating Camera Feed Box */}
-            <div className="flex-1 w-full bg-[#050505] rounded-xl flex items-center justify-center relative overflow-hidden group border border-white/5">
-              {/* High-visibility Scanning line */}
-              <motion.div 
-                animate={{ top: ["0%", "100%", "0%"] }}
-                transition={{ repeat: Infinity, duration: 3.5, ease: "linear" }}
-                className="absolute left-0 w-full h-[3px] bg-[var(--neon-blue)] opacity-90 shadow-[0_0_15px_3px_var(--neon-blue)] z-20 pointer-events-none"
-              />
-              {/* Grid overlay */}
-              <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/cubes.png')] opacity-5 z-0" />
-              
-              {/* Crosshair decoration */}
-              <div className="absolute w-full h-full pointer-events-none z-10">
-                <div className="absolute top-[20%] left-[20%] w-10 h-10 border-t-2 border-l-2 border-[var(--neon-green)]/70" />
-                <div className="absolute top-[20%] right-[20%] w-10 h-10 border-t-2 border-r-2 border-[var(--neon-green)]/70" />
-                <div className="absolute bottom-[20%] left-[20%] w-10 h-10 border-b-2 border-l-2 border-[var(--neon-green)]/70" />
-                <div className="absolute bottom-[20%] right-[20%] w-10 h-10 border-b-2 border-r-2 border-[var(--neon-green)]/70" />
-              </div>
+            {/* Live Video Embedded Display */}
+            <div className="w-full h-full p-4 flex items-center justify-center bg-black/40">
+              <div className="relative w-full aspect-video rounded-xl border border-white/10 overflow-hidden bg-black shadow-2xl">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className="w-full h-full object-cover"
+                />
+                
+                {/* Hidden canvas for capturing frames */}
+                <canvas ref={canvasRef} className="hidden" width={1280} height={720} />
 
-              {/* Live Video Embedded Display */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
-                src="http://127.0.0.1:5000/video_feed" 
-                alt="Live Camera Feed" 
-                className="w-[95%] h-[95%] rounded border border-white/10 object-cover relative z-10 shadow-lg" 
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  const parent = e.currentTarget.parentElement;
-                  if (parent && !parent.querySelector('.fallback-msg')) {
-                     const fallback = document.createElement('div');
-                     fallback.className = 'flex flex-col items-center fallback-msg relative z-10 mt-8';
-                     fallback.innerHTML = `
-                       <svg class="w-16 h-16 text-white/5 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                         <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle>
-                       </svg>
-                       <p class="text-red-500/80 font-mono text-sm uppercase tracking-widest text-center px-4">
-                         Video Stream Offline.<br/>
-                         <span class="text-white/30 text-xs">Run 'python main.py' to start the backend.</span>
-                       </p>
-                     `;
-                     parent.appendChild(fallback);
-                  }
-                }} 
-              />
+                {/* SVG Overlay for detections */}
+                <svg
+                  className="absolute inset-0 w-full h-full pointer-events-none"
+                  viewBox="0 0 1280 720"
+                  preserveAspectRatio="xMidYMid slice"
+                >
+                  {detections.map((det, idx) => (
+                    <g key={idx}>
+                      <rect
+                        x={det.box[0]}
+                        y={det.box[1]}
+                        width={det.box[2] - det.box[0]}
+                        height={det.box[3] - det.box[1]}
+                        fill="transparent"
+                        stroke={det.label.includes("Face") ? "#ef4444" : "#22c55e"}
+                        strokeWidth="3"
+                        className="transition-all duration-200"
+                      />
+                      <rect
+                        x={det.box[0]}
+                        y={det.box[1] - 30}
+                        width={200}
+                        height={30}
+                        fill={det.label.includes("Face") ? "#ef4444" : "#22c55e"}
+                        fillOpacity="0.8"
+                      />
+                      <text
+                        x={det.box[0] + 8}
+                        y={det.box[1] - 8}
+                        className="text-[18px] font-bold fill-white"
+                      >
+                        {det.label} ({Math.round(det.conf * 100)}%)
+                      </text>
+                      {det.plate && (
+                        <text
+                          x={det.box[0]}
+                          y={det.box[3] + 35}
+                          className="text-[22px] font-black fill-[#ef4444] font-mono filter drop-shadow-md"
+                        >
+                          PLATE: {det.plate}
+                        </text>
+                      )}
+                    </g>
+                  ))}
+                </svg>
+
+                {!cameraActive && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-20">
+                    <div className="w-16 h-16 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin mb-4" />
+                    <p className="text-cyan-400 font-mono text-sm uppercase tracking-widest text-center px-4">
+                      Initializing Browser Camera...<br/>
+                      <span className="text-white/30 text-xs text-center block mt-2">Requesting permission for local webcam</span>
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </Card>
         </motion.div>
@@ -252,57 +352,144 @@ export default function DashboardPage() {
             </div>
             
             <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
-              {violations.map((v, i) => {
-                 let colorClasses = "text-yellow-400 bg-yellow-500/10 border-yellow-500/20";
-                 if (v.violation === "No Helmet") colorClasses = "text-red-400 bg-red-500/10 border-red-500/20";
-                 else if (v.violation === "Speeding") colorClasses = "text-orange-400 bg-orange-500/10 border-orange-500/20";
+              {violations.length === 0 ? (
+                <div className="h-64 flex flex-col items-center justify-center opacity-30 text-center">
+                   <ShieldAlert className="w-12 h-12 mb-3" />
+                   <p className="text-sm font-mono tracking-widest uppercase">No Violations Logged</p>
+                </div>
+              ) : (
+                violations.map((v, i) => {
+                  let colorClasses = "text-yellow-400 bg-yellow-500/10 border-yellow-500/20";
+                  if (v.violation === "No Helmet") colorClasses = "text-red-400 bg-red-500/10 border-red-500/20";
+                  else if (v.violation === "Speeding") colorClasses = "text-orange-400 bg-orange-500/10 border-orange-500/20";
 
-                 return (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 + (i * 0.1) }}
-                    className="bg-[#111] border border-white/5 rounded-xl p-3 flex items-start space-x-3 hover:border-gray-600 transition-all cursor-pointer group hover:bg-[#1a1a1a]"
-                  >
-                    {/* Thumbnail Placeholder */}
-                    <div className="w-16 h-16 bg-black rounded-lg overflow-hidden relative border border-gray-800 group-hover:border-gray-600 transition-colors shrink-0">
-                      {v.image ? (
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img src={v.image} alt={v.plate} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <Camera className="w-6 h-6 text-gray-700 group-hover:text-gray-400 transition-colors" />
-                        </div>
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-start">
-                        <h4 className="font-mono font-bold text-gray-200 truncate">{v.plate}</h4>
-                        <span className="text-xs text-gray-500 flex items-center shrink-0">
-                          <Clock className="w-3 h-3 mr-1" />
-                          {v.time}
-                        </span>
-                      </div>
-                      <div className="mt-2 flex items-center">
-                        <span className={`px-2 py-0.5 border text-xs rounded font-medium truncate ${colorClasses}`}>
+                  return (
+                    <motion.div
+                      key={v.id || i}
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="p-4 rounded-xl bg-gray-900/40 border border-gray-800/50 hover:border-gray-700 transition-all group"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tighter border ${colorClasses}`}>
                           {v.violation}
                         </span>
+                        <span className="text-[10px] font-mono text-gray-500">{new Date(v.time).toLocaleTimeString()}</span>
                       </div>
-                    </div>
-                  </motion.div>
-                 );
-              })}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-lg font-black text-white font-mono tracking-wider group-hover:text-cyan-400 transition-colors uppercase">{v.plate}</p>
+                          <p className="text-xs text-gray-400 flex items-center">
+                             <Target className="w-3 h-3 mr-1" /> {Math.round(v.confidence)}% Confidence
+                          </p>
+                        </div>
+                        <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700 overflow-hidden">
+                           {v.image ? <img src={v.image} alt="Plate" className="w-full h-full object-cover" /> : <Camera className="w-5 h-5 text-gray-600" />}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )
+                })
+              )}
             </div>
-            
-            <button className="w-full mt-4 py-2.5 text-sm font-medium text-cyan-400 hover:text-white border border-cyan-500/30 hover:bg-cyan-500/20 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-cyan-500/50">
-              View All Events
+            <button className="w-full mt-4 py-2.5 text-sm font-medium text-cyan-400 hover:text-white border border-cyan-500/30 hover:bg-cyan-500/20 rounded-lg transition-all focus:outline-none">
+              View Analytics
             </button>
           </Card>
         </motion.div>
       </div>
+
+      {/* NEW SECTION: VIOLATION HISTORY (No Helmet Focus) */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="mb-8"
+      >
+        <Card glow="blue" className="p-0 overflow-hidden border border-cyan-500/20 bg-[#0a0a0a]/90 backdrop-blur-md">
+          <div className="p-5 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-[#111] to-[#0a0a0a]">
+            <div>
+              <h3 className="text-xl font-bold flex items-center text-white tracking-tight">
+                <History className="w-5 h-5 text-cyan-400 mr-2 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]" />
+                Violation History
+              </h3>
+              <p className="text-xs text-gray-500 mt-1 font-medium italic">Tracking every 'No Helmet' detection instance</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="px-2 py-1 rounded bg-red-500/10 border border-red-500/20 text-[10px] font-bold text-red-400 uppercase tracking-widest animate-pulse">
+                Live Feed Active
+              </span>
+            </div>
+          </div>
+          
+          <div className="overflow-x-auto overflow-y-hidden">
+            <table className="w-full text-left text-sm text-gray-400">
+              <thead className="text-xs uppercase bg-[#0d0d0d]/80 text-gray-500 border-b border-white/5 font-mono tracking-wider">
+                <tr>
+                  <th className="px-6 py-4 font-semibold text-cyan-500/80">Timestamp</th>
+                  <th className="px-6 py-4 font-semibold text-cyan-500/80 text-center">Detection Type</th>
+                  <th className="px-6 py-4 font-semibold text-cyan-500/80">Confidence</th>
+                  <th className="px-6 py-4 font-semibold text-cyan-500/80 text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5 bg-[#0a0a0a]/40">
+                {violations.filter(v => v.violation === "No Helmet").length > 0 ? (
+                  violations
+                    .filter(v => v.violation === "No Helmet")
+                    .map((v, i) => (
+                      <tr key={v.id || i} className="hover:bg-cyan-500/5 transition-all group/row border-l-2 border-l-transparent hover:border-l-cyan-500">
+                        <td className="px-6 py-5 whitespace-nowrap">
+                          <div className="flex items-center space-x-3">
+                            <div className="p-2 rounded-lg bg-white/5 border border-white/10 group-hover/row:border-cyan-500/30 transition-colors">
+                              <Clock className="w-4 h-4 text-gray-500 group-hover/row:text-cyan-400" />
+                            </div>
+                            <span className="font-mono text-gray-300 group-hover/row:text-white transition-colors">{v.time}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-5 text-center">
+                          <span className="px-3 py-1.5 rounded-full text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.1)] group-hover/row:shadow-[0_0_15px_rgba(239,68,68,0.2)] transition-all">
+                            NO HELMET
+                          </span>
+                        </td>
+                        <td className="px-6 py-5">
+                          <div className="flex flex-col space-y-1.5 w-48">
+                            <div className="flex justify-between text-[10px] font-mono">
+                              <span className="text-gray-500 group-hover/row:text-gray-400">ACCURACY</span>
+                              <span className="text-cyan-400 font-bold">{Math.round(v.confidence)}%</span>
+                            </div>
+                            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                              <motion.div 
+                                initial={{ width: 0 }}
+                                animate={{ width: `${Math.round(v.confidence)}%` }}
+                                transition={{ duration: 1, ease: "easeOut" }}
+                                className="h-full bg-gradient-to-r from-cyan-600 to-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.4)]"
+                              />
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-5 text-right">
+                          <div className="flex items-center justify-end space-x-2">
+                             <div className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+                             <span className="text-[10px] font-black text-gray-500 group-hover/row:text-gray-300 tracking-widest uppercase">Verified</span>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="px-6 py-12 text-center">
+                      <div className="flex flex-col items-center opacity-40">
+                        <ShieldAlert className="w-12 h-12 mb-4 text-gray-600" />
+                        <p className="text-gray-500 font-mono text-sm tracking-widest">NO HELMET VIOLATIONS DETECTED IN SESSION</p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </motion.div>
 
        {/* BOTTOM SECTION: RECORDS TABLE */}
        <motion.div

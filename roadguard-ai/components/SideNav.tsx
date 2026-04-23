@@ -82,7 +82,7 @@ export function SideNav() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="flex flex-col space-y-4 p-2 bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl">
+      <div className="flex flex-col space-y-4 p-2 bg-glass backdrop-blur-xl border border-glass-border rounded-2xl shadow-2xl transition-all duration-300">
         {navItems.map((item) => (
           <button
             key={item.id}
@@ -92,7 +92,7 @@ export function SideNav() {
             <div className={`p-3 rounded-xl transition-all duration-300 flex items-center ${
               activeSection === item.id 
               ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30" 
-              : "text-gray-500 hover:text-white hover:bg-white/5 border border-transparent"
+              : "text-muted hover:text-foreground hover:bg-glass border border-transparent"
             }`}>
               <item.icon className="w-5 h-5 flex-shrink-0" />
               

@@ -11,6 +11,37 @@ import Image from "next/image";
 import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, onSnapshot } from "firebase/firestore";
+import { VisualEffects } from "@/components/VisualEffects";
+import { useInView } from "framer-motion";
+import { useRef } from "react";
+
+const RollingNumber = ({ value, suffix = "" }: { value: number; suffix?: string }) => {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  useEffect(() => {
+    if (isInView) {
+      let start = 0;
+      const end = value;
+      const duration = 2000;
+      const increment = end / (duration / 16);
+
+      const timer = setInterval(() => {
+        start += increment;
+        if (start >= end) {
+          setCount(end);
+          clearInterval(timer);
+        } else {
+          setCount(Math.floor(start));
+        }
+      }, 16);
+      return () => clearInterval(timer);
+    }
+  }, [isInView, value]);
+
+  return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
+};
 
 export default function Home() {
   const router = useRouter();
@@ -21,7 +52,10 @@ export default function Home() {
   const [scanComplete, setScanComplete] = useState(false);
 
   const { scrollY } = useScroll();
-  const yBackground = useTransform(scrollY, [0, 1000], [0, 200]);
+  const yHero = useTransform(scrollY, [0, 1000], [0, 200]);
+  const yCrisis = useTransform(scrollY, [400, 1400], [0, 150]);
+  const yFoundation = useTransform(scrollY, [1000, 2000], [0, 150]);
+  const ySolution = useTransform(scrollY, [1800, 2800], [0, 150]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -89,7 +123,7 @@ export default function Home() {
     visible: {
       opacity: 1,
       x: 0,
-      transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } // Smooth snap transition
+      transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1] } // Premium liquid transition
     }
   };
 
@@ -109,65 +143,89 @@ export default function Home() {
   };
 
   return (
-    <main className="flex-1 flex flex-col relative w-full mb-10 overflow-hidden bg-[#050505]">
+    <main className="flex-1 flex flex-col relative w-full mb-10 overflow-hidden bg-background text-foreground transition-colors duration-300">
+      <VisualEffects />
 
-      {/* Background Decor - Parallax Image */}
-      <motion.div
-        style={{ y: yBackground }}
-        className="absolute inset-0 z-0 pointer-events-none h-[130vh] overflow-hidden"
-      >
+      {/* HERO SECTION - PART 1: BRANDING INTRO */}
+      <section id="hero-intro" className="min-h-screen flex flex-col justify-center items-center text-center px-4 relative z-10">
         <motion.div
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 7, ease: "easeOut" }}
-          className="w-full h-full relative"
+          style={{ y: yHero }}
+          className="absolute inset-0 -z-10 pointer-events-none h-full overflow-hidden"
         >
           <Image
             src="/photo/hero-bg.jpg"
             alt="City Traffic"
             fill
-            className="object-cover opacity-40"
+            className="object-cover opacity-70"
             priority
           />
-          {/* Dark Overlay Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/20 to-[#050505]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-background/40 to-background" />
         </motion.div>
-      </motion.div>
-
-      {/* HERO SECTION */}
-      <section id="hero" className="min-h-[100vh] flex flex-col justify-center items-center text-center px-4 relative z-10 pt-16">
         <motion.div
           initial="hidden"
           animate="visible"
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.15 } }
-          }}
+          variants={staggerContainer}
           className="flex flex-col items-center"
         >
           <motion.div
             variants={fadeInUp}
-            className="inline-flex items-center space-x-2 bg-black/40 border border-white/10 px-4 py-2 rounded-full mb-8 backdrop-blur-md shadow-lg"
+            className="inline-flex items-center space-x-2 bg-black/40 border border-white/10 px-4 py-2 rounded-full mb-12 backdrop-blur-md shadow-lg"
           >
-            <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-[pulse_2s_ease-in-out_infinite] shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
-            <span className="text-sm text-gray-300 font-medium tracking-wide">
-              {totalViolations > 0 ? `${totalViolations} Violations Stopped` : "System Active"}
+            <span className="w-2 h-2 rounded-full bg-[#cfb36e] animate-pulse" />
+            <span className="text-[10px] text-[#cfb36e] font-mono tracking-widest uppercase">
+              [ SYSTEM ACTIVE ]
             </span>
           </motion.div>
 
+          <motion.div variants={fadeInUp}>
+            <h1 className="text-6xl md:text-9xl font-black text-foreground tracking-tighter mb-6 drop-shadow-2xl">
+              IndianRoad<span className="bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">.AI</span>
+            </h1>
+            <p className="text-muted text-lg md:text-2xl font-light tracking-wide uppercase font-mono bg-gradient-to-r from-muted via-foreground to-muted bg-clip-text text-transparent opacity-80 animate-[shimmer_5s_infinite]">
+              Built for Indian roads. Protecting every journey.
+            </p>
+          </motion.div>
+
+          <motion.div
+            variants={fadeInUp}
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 opacity-40 hover:opacity-100 transition-opacity cursor-pointer group"
+          >
+            <span className="text-[9px] font-mono tracking-widest uppercase">Scroll to Mission</span>
+            <div className="w-px h-12 bg-gradient-to-b from-[#cfb36e] to-transparent group-hover:h-16 transition-all duration-500" />
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* HERO SECTION - PART 2: MISSION STATEMENT WITH PICTURE */}
+      <section id="hero-mission" className="min-h-screen flex flex-col justify-center items-center text-center px-4 relative z-10">
+        {/* Section Background - Moved here for the "scroll to picture" feel */}
+        <motion.div
+          style={{ y: yHero }}
+          className="absolute inset-0 -z-10 pointer-events-none h-full overflow-hidden"
+        >
+          <Image
+            src="/photo/hero-bg2.jpg"
+            alt="City Traffic"
+            fill
+            className="object-cover opacity-70"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-background/20 to-background" />
+        </motion.div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, margin: "-10%" }}
+          variants={staggerContainer}
+          className="flex flex-col items-center"
+        >
           <motion.h1
             variants={fadeInUp}
-            className="text-6xl md:text-8xl font-black text-white tracking-tight mb-6 drop-shadow-xl"
+            className="text-2xl md:text-6xl font-black text-foreground tracking-tight mb-12 drop-shadow-2xl max-w-6xl leading-[1.05]"
           >
-            IndianRoad<span className="bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">.AI</span>
+            <span className="text-cyan-500">IndianRoad.AI</span> is on a mission to <span className="opacity-90">eliminate road fatalities</span> caused by helmet negligence and to <span className="text-cyan-500">protect every journey</span> in India.
           </motion.h1>
-
-          <motion.p
-            variants={fadeInUp}
-            className="max-w-2xl text-xl text-gray-400 mb-10 leading-relaxed"
-          >
-            Smart Helmet & Traffic Violation Detection System powered by next-generation computer vision.
-          </motion.p>
 
           <motion.div
             variants={fadeInUp}
@@ -176,7 +234,7 @@ export default function Home() {
             <Button
               variant="primary"
               size="lg"
-              className="w-full sm:w-auto gap-2 group bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-[0_4px_14px_rgba(0,0,0,0.25)] hover:shadow-[0_6px_20px_rgba(6,182,212,0.25)] border-0 hover:scale-105 transition-all duration-300"
+              className="w-full sm:w-auto gap-4 group bg-[#cfb36e] hover:bg-[#cfb36e]/80 text-black shadow-[0_4px_14px_rgba(207,179,110,0.25)] border-0 hover:scale-105 transition-all duration-300 font-bold px-10"
               onClick={(e) => handleProtectedAction(e, '/dashboard')}
             >
               Get Started
@@ -186,7 +244,7 @@ export default function Home() {
             <Button
               variant="outline"
               size="lg"
-              className="w-full sm:w-auto gap-2 group border border-white/20 bg-white/5 backdrop-blur-md hover:bg-white/10 text-white transition-all duration-300"
+              className="w-full sm:w-auto gap-4 group border border-white/20 bg-white/5 backdrop-blur-md hover:bg-white/10 text-white transition-all duration-300 px-10"
               onClick={(e) => handleProtectedAction(e, '/dashboard')}
             >
               View Live Demo
@@ -198,6 +256,19 @@ export default function Home() {
 
       {/* ROAD SAFETY STATISTICS */}
       <section id="crisis" className="py-24 px-6 relative z-10 max-w-7xl mx-auto w-full overflow-hidden">
+        {/* Section Background */}
+        <motion.div
+          style={{ y: yCrisis }}
+          className="absolute inset-0 -z-10 pointer-events-none opacity-20"
+        >
+          <Image
+            src="/photo/indian-road-1.jpg"
+            alt="Background"
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-transparent to-[#050505]" />
+        </motion.div>
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -205,8 +276,11 @@ export default function Home() {
           variants={scrollVariants}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">Road Safety <span className="text-red-500 drop-shadow-md">Crisis</span></h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">Understanding the magnitude of traffic violations and the urgent need for AI intervention.</p>
+          <span className="text-[#cfb36e] font-mono text-[10px] tracking-[0.3em] uppercase mb-4 block opacity-70">
+            [ 01 • SAFETY METRICS ]
+          </span>
+          <h2 className="text-3xl md:text-5xl font-black mb-4 text-foreground uppercase tracking-tighter">System Analytics</h2>
+          <p className="text-muted max-w-2xl mx-auto font-mono text-xs uppercase tracking-widest">Real-time analytical data from monitored junctions</p>
         </motion.div>
 
         <motion.div
@@ -220,8 +294,8 @@ export default function Home() {
             <Link href="/articles/helmet-negligence" className="group block h-full">
               <Card glow="none" className="h-full flex flex-col items-center text-center p-8 border-red-500/20 bg-red-500/5 hover:bg-red-500/20 hover:border-red-500/50 transition-all duration-500 relative overflow-hidden">
                 <Activity className="w-12 h-12 text-red-500 mb-6 drop-shadow-lg group-hover:scale-110 transition-transform duration-500" />
-                <h3 className="text-5xl font-black text-white mb-2">70%</h3>
-                <p className="text-gray-400 mb-6">Two-wheeler fatalities involve helmet negligence</p>
+                <h3 className="text-5xl font-black text-foreground mb-2"><RollingNumber value={70} suffix="%" /></h3>
+                <p className="text-muted mb-6">Two-wheeler fatalities involve helmet negligence</p>
                 <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-red-400 font-bold text-sm">
                   Read Research <ArrowRight className="w-4 h-4 ml-2" />
                 </div>
@@ -233,8 +307,8 @@ export default function Home() {
             <Link href="/articles/accident-statistics" className="group block h-full">
               <Card glow="none" className="h-full flex flex-col items-center text-center p-8 border-orange-500/20 bg-orange-500/5 hover:bg-orange-500/20 hover:border-orange-500/50 transition-all duration-500 relative overflow-hidden">
                 <Shield className="w-12 h-12 text-orange-500 mb-6 drop-shadow-lg group-hover:scale-110 transition-transform duration-500" />
-                <h3 className="text-5xl font-black text-white mb-2">1.5M+</h3>
-                <p className="text-gray-400 mb-6">Annual road accidents globally primarily due to rule breaking</p>
+                <h3 className="text-5xl font-black text-foreground mb-2"><RollingNumber value={1.5} suffix="M+" /></h3>
+                <p className="text-muted mb-6">Annual road accidents globally primarily due to rule breaking</p>
                 <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-orange-400 font-bold text-sm">
                   Read Research <ArrowRight className="w-4 h-4 ml-2" />
                 </div>
@@ -246,8 +320,8 @@ export default function Home() {
             <Link href="/articles/manual-enforcement" className="group block h-full">
               <Card glow="none" className="h-full flex flex-col items-center text-center p-8 border-yellow-500/20 bg-yellow-500/5 hover:bg-yellow-500/20 hover:border-yellow-500/50 transition-all duration-500 relative overflow-hidden">
                 <Bell className="w-12 h-12 text-yellow-500 mb-6 drop-shadow-lg group-hover:scale-110 transition-transform duration-500" />
-                <h3 className="text-5xl font-black text-white mb-2">Manual</h3>
-                <p className="text-gray-400 mb-6">Current enforcement is highly inefficient and error-prone</p>
+                <h3 className="text-5xl font-black text-foreground mb-2">Autonomous</h3>
+                <p className="text-muted mb-6">Current enforcement is highly inefficient and error-prone</p>
                 <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-yellow-400 font-bold text-sm">
                   Read Research <ArrowRight className="w-4 h-4 ml-2" />
                 </div>
@@ -257,8 +331,82 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* SOLUTION OVERVIEW & FEATURES */}
+      {/* MISSION & VISION SECTION */}
+      <section id="foundation" className="py-24 px-6 relative z-10 max-w-7xl mx-auto w-full overflow-hidden border-t border-border bg-card/30">
+        {/* Section Background */}
+        <motion.div
+          style={{ y: yFoundation }}
+          className="absolute inset-0 -z-10 pointer-events-none opacity-20"
+        >
+          <Image
+            src="/photo/indian-road-4.jpg"
+            alt="Background"
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#050505]/60 to-[#050505]" />
+        </motion.div>
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-10%" }}
+          variants={fadeInUp}
+          className="grid md:grid-cols-2 gap-8"
+        >
+          {/* MISSION CARD */}
+          <Card glow="blue" className="p-10 border border-white/5 bg-gradient-to-br from-[#111] to-[#0a0a0a] shadow-2xl relative group overflow-hidden">
+            <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
+              <Target className="w-32 h-32 text-white" />
+            </div>
+            <div className="relative z-10">
+              <div className="w-12 h-12 rounded-2xl bg-[#cfb36e]/10 border border-[#cfb36e]/20 flex items-center justify-center mb-6">
+                <Target className="w-6 h-6 text-[#cfb36e]" />
+              </div>
+              <span className="text-[#cfb36e] font-mono text-[10px] tracking-[0.3em] uppercase mb-4 block opacity-50">
+                [ 02 • CORE PURPOSE ]
+              </span>
+              <h3 className="text-4xl font-black text-foreground mb-6 uppercase tracking-tighter">Our Mission</h3>
+              <p className="text-muted text-lg leading-relaxed font-light">
+                To eradicate road fatalities caused by safety negligence through high-precision <span className="text-foreground font-medium">AI monitoring</span> and real-time enforcement tailored specifically for <span className="text-cyan-500 font-medium">Indian roads</span>.
+              </p>
+            </div>
+          </Card>
+
+          {/* VISION CARD */}
+          <Card glow="green" className="p-10 border border-white/5 bg-gradient-to-br from-[#111420] to-[#0a0b14] shadow-2xl relative group overflow-hidden">
+            <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
+              <Eye className="w-32 h-32 text-white" />
+            </div>
+            <div className="relative z-10">
+              <div className="w-12 h-12 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-6">
+                <Eye className="w-6 h-6 text-green-400" />
+              </div>
+              <span className="text-green-400 font-mono text-[10px] tracking-[0.3em] uppercase mb-4 block opacity-50">
+                [ 02 • CORE PURPOSE ]
+              </span>
+              <h3 className="text-4xl font-black text-foreground mb-6 uppercase tracking-tighter">Our Vision</h3>
+              <p className="text-muted text-lg leading-relaxed font-light">
+                To become the global gold standard for <span className="text-foreground font-medium">autonomous traffic safety</span>, fostering a world where every single road journey is intelligently and proactively <span className="text-green-500 font-medium">protected</span>.
+              </p>
+            </div>
+          </Card>
+        </motion.div>
+      </section>
+
       <section id="solution" className="py-24 px-6 relative z-10 max-w-7xl mx-auto w-full overflow-hidden">
+        {/* Section Background */}
+        <motion.div
+          style={{ y: ySolution }}
+          className="absolute inset-0 -z-10 pointer-events-none opacity-20"
+        >
+          <Image
+            src="/photo/indian-road-5.jpg"
+            alt="Background"
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-transparent to-[#050505]" />
+        </motion.div>
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -266,82 +414,87 @@ export default function Home() {
           variants={scrollVariants}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">Our <span className="bg-gradient-to-r from-green-400 to-cyan-500 text-transparent bg-clip-text">Solution</span></h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">An autonomous end-to-end pipeline replacing manual vigilance with accurate AI models.</p>
+          <span className="text-[#cfb36e] font-mono text-[10px] tracking-[0.3em] uppercase mb-4 block opacity-70">
+            [ 03 • EXECUTION PIPELINE ]
+          </span>
+          <h2 className="text-3xl md:text-5xl font-black mb-4 text-foreground uppercase tracking-tighter">System Performance</h2>
+          <p className="text-muted max-w-2xl mx-auto font-mono text-xs uppercase tracking-widest text-center">Autonomous life-cycle of a safety violation</p>
         </motion.div>
 
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, margin: "-10%" }}
-          className="grid md:grid-cols-4 gap-6"
-        >
-          {/* Bento Item 1: Wide */}
-          <motion.div variants={scrollVariants} className="md:col-span-2">
-            <Link href="/features/helmet-detection" className="group block h-full">
-              <Card glow="blue" spotlightColor="rgba(34,211,238,0.15)" className="h-full flex flex-col justify-end min-h-[300px] p-8 border border-cyan-500/20 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-cyan-950/40 via-[#111] to-[#111]">
-                <ScanSearch className="w-10 h-10 text-cyan-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
-                <h3 className="text-2xl font-bold text-white mb-2">Autonomous Helmet Detection</h3>
-                <p className="text-gray-400 mb-8">YOLOv8 scanning 8.5 FPS live feeds with 91% helmet detection precision.</p>
-                <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-cyan-400 font-bold text-sm">
-                  Explore Technology <ArrowRight className="w-4 h-4 ml-2" />
-                </div>
-              </Card>
-            </Link>
-          </motion.div>
+        {/* Horizontal Process Flow (1-2-3-4) */}
+        <div className="relative pt-12">
+          {/* Connecting Line */}
+          <div className="absolute top-[4.5rem] left-0 w-full h-0.5 bg-white/5 md:block hidden" />
 
-          {/* Bento Item 2: Square */}
-          <motion.div variants={scrollVariants} className="md:col-span-2">
-            <Link href="/features/ocr-plate-extraction" className="group block h-full">
-              <Card glow="green" spotlightColor="rgba(74,222,128,0.15)" className="h-full flex flex-col justify-end min-h-[300px] p-8 border border-green-500/20 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-green-900/40 via-[#111] to-[#111]">
-                <Eye className="w-10 h-10 text-green-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
-                <h3 className="text-2xl font-bold text-white mb-2">OCR Plate Extraction</h3>
-                <p className="text-gray-400 mb-8">Pinpoint accuracy in isolating vehicle numbers during high-speed movement.</p>
-                <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-green-400 font-bold text-sm">
-                  Explore Technology <ArrowRight className="w-4 h-4 ml-2" />
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-4 gap-12 relative z-10"
+          >
+            {[
+              { id: 1, title: "Edge Capture", desc: "Digital eyes scan junctions with 4K clarity.", icon: Camera },
+              { id: 2, title: "AI Analysis", desc: "YOLOv8 identifies safety violations instantly.", icon: ScanSearch },
+              { id: 3, title: "Data Sync", desc: "Evidence is pushed to central cloud history.", icon: Database },
+              { id: 4, title: "Enforcement", desc: "E-Challan is generated for administrative review.", icon: Bell },
+            ].map((step, idx) => (
+              <motion.div
+                key={idx}
+                variants={scrollVariants}
+                className="flex flex-col items-center text-center group"
+              >
+                <div className="w-16 h-16 rounded-full bg-[#111420] border border-white/10 flex items-center justify-center mb-6 relative group-hover:border-[#cfb36e]/50 transition-all duration-300 shadow-xl group-hover:shadow-[#cfb36e]/20">
+                  <span className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-[#cfb36e] text-black text-[10px] font-black flex items-center justify-center shadow-lg">
+                    {step.id}
+                  </span>
+                  <step.icon className="w-6 h-6 text-gray-400 group-hover:text-[#cfb36e] transition-colors" />
                 </div>
-              </Card>
-            </Link>
+                <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-cyan-400 transition-colors tracking-tight">{step.title}</h3>
+                <p className="text-muted text-sm leading-relaxed max-w-[200px]">{step.desc}</p>
+              </motion.div>
+            ))}
           </motion.div>
+        </div>
+      </section>
 
-          {/* Bento Item 3: Full Width */}
-          <motion.div variants={scrollVariants} className="md:col-span-4">
-            <Link href="/features/e-challan-pipeline" className="group block h-full">
-              <Card glow="blue" spotlightColor="rgba(255,255,255,0.08)" className="h-full flex flex-col md:flex-row items-center p-8 bg-[#0a0a0a] border border-white/10">
-                <div className="flex-1 text-left mb-8 md:mb-0 md:mr-8 flex flex-col h-full justify-center">
-                  <div className="w-14 h-14 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-2xl flex items-center justify-center mb-6 border border-white/5 group-hover:scale-110 transition-transform duration-500">
-                    <CheckCircle className="w-7 h-7 text-cyan-400" />
-                  </div>
-                  <h3 className="text-3xl font-black text-white mb-4">Realtime E-Challan Pipeline</h3>
-                  <p className="text-gray-400 max-w-lg text-lg leading-relaxed mb-6">
-                    Automatically generates verifiable visual evidence and pushes directly to the central dashboard for rapid ticketing.
-                  </p>
-                  <div className="mt-auto opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center text-blue-400 font-bold text-sm">
-                    Explore Technology <ArrowRight className="w-4 h-4 ml-2" />
-                  </div>
-                </div>
-
-                {/* Custom CSS Mini-Chart Visual */}
-                <div className="w-full md:w-1/2 flex items-end justify-between h-[200px] border border-white/5 bg-black rounded-xl p-6 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/cubes.png')] opacity-10" />
-                  {[35, 60, 45, 85, 55, 95, 70, 90, 60, 100].map((h, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ height: 0 }}
-                      whileInView={{ height: `${h}%` }}
-                      transition={{ delay: 0.1 * i, duration: 0.8, type: "spring" }}
-                      className="w-[8%] bg-gradient-to-t from-blue-600 to-cyan-400 rounded-t-md shadow-[0_0_15px_rgba(34,211,238,0.3)] relative group-hover:from-blue-500 group-hover:to-cyan-300 transition-colors"
-                    />
-                  ))}
-                  <div className="absolute top-4 left-6 py-1 px-3 bg-white/10 backdrop-blur-md rounded border border-white/20 text-xs font-mono text-cyan-100">
-                    SYSTEM LOAD
-                  </div>
-                </div>
-              </Card>
-            </Link>
-          </motion.div>
-        </motion.div>
+      {/* TECHNICAL FOUNDATION & TRUST */}
+      <section className="py-20 px-6 relative z-10 border-y border-white/5 bg-black/20">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
+          <div className="flex-1">
+            <span className="text-[#cfb36e] font-mono text-[9px] tracking-[0.4em] uppercase mb-4 block">
+              [ TECHNICAL STACK ]
+            </span>
+            <h3 className="text-2xl font-black text-white uppercase tracking-tighter mb-2">Built on Industry Giants</h3>
+            <p className="text-gray-500 text-sm font-light">Leveraging state-of-the-art computer vision and cloud infrastructure.</p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-12 grayscale opacity-40 hover:grayscale-0 transition-all duration-500">
+            <div className="flex items-center space-x-3 group cursor-pointer">
+              <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center border border-white/10 group-hover:border-white/40 transition-colors">
+                <ScanSearch className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-white font-black tracking-tighter text-xl">YOLOv8</span>
+            </div>
+            <div className="flex items-center space-x-3 group cursor-pointer">
+              <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center border border-white/10 group-hover:border-orange-500/40 transition-colors">
+                <Database className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-white font-black tracking-tighter text-xl">FIREBASE</span>
+            </div>
+            <div className="flex items-center space-x-3 group cursor-pointer">
+              <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center border border-white/10 group-hover:border-blue-500/40 transition-colors">
+                <Zap className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-white font-black tracking-tighter text-xl">5G-EDGE</span>
+            </div>
+            <div className="flex items-center space-x-3 group cursor-pointer">
+              <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center border border-white/10 group-hover:border-white/40 transition-colors">
+                <Layers className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-white font-black tracking-tighter text-xl">NEXT.JS</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* AI PLAYGROUND SECTION */}
@@ -353,9 +506,12 @@ export default function Home() {
             viewport={{ once: true }}
             variants={fadeInUp}
           >
-            <h2 className="text-4xl font-black text-white mb-6">Experience <span className="text-cyan-400">AI Logic</span></h2>
-            <p className="text-gray-400 text-lg mb-8 leading-relaxed">
-              Our YOLOv8 custom models aren't just software; they're digital eagle eyes. Click below to see how the system identifies violations in a fraction of a second.
+            <span className="text-[#cfb36e] font-mono text-[10px] tracking-[0.3em] uppercase mb-4 block opacity-70">
+              [ 04 • AI LOGIC DEMO ]
+            </span>
+            <h2 className="text-4xl font-black text-white mb-6 uppercase tracking-tighter">Experience <span className="text-[#cfb36e]">AI Reasoning</span></h2>
+            <p className="text-gray-400 text-lg mb-8 leading-relaxed font-light">
+              Our YOLOv8 custom models aren't just software; they're digital eyes. See how the system identifies violations in millisecond cycles.
             </p>
             <div className="space-y-4">
               {[
@@ -364,7 +520,7 @@ export default function Home() {
                 { title: "Inference Latency", detail: "117ms per Frame" }
               ].map((feat, i) => (
                 <div key={i} className="flex items-center space-x-3 text-gray-300">
-                  <CheckCircle className="w-5 h-5 text-cyan-400" />
+                  <CheckCircle className="w-5 h-5 text-[#cfb36e]" />
                   <span><strong className="text-white">{feat.title}:</strong> {feat.detail}</span>
                 </div>
               ))}
@@ -374,13 +530,13 @@ export default function Home() {
                 setIsScanning(true);
                 setTimeout(() => { setIsScanning(false); setScanComplete(true); }, 2000);
               }}
-              className="mt-10 bg-cyan-500 hover:bg-cyan-400 text-black font-black px-8 py-4 rounded-xl shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all active:scale-95"
+              className="mt-10 bg-[#cfb36e] hover:bg-[#cfb36e]/80 text-black font-black px-8 py-4 rounded-xl shadow-[0_0_20px_rgba(207,179,110,0.3)] transition-all active:scale-95"
             >
               {scanComplete ? "Rescan Environment" : "Start Live AI Scan"}
             </Button>
           </motion.div>
 
-          <Card className="p-0 overflow-hidden aspect-video relative border-cyan-500/30 group bg-black shadow-2xl">
+          <Card className="p-0 overflow-hidden aspect-video relative border-[#cfb36e]/30 group bg-black shadow-2xl">
             {/* Sample Street Image */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -398,7 +554,7 @@ export default function Home() {
                   animate={{ top: "100%" }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 2, ease: "linear" }}
-                  className="absolute left-0 w-full h-1 bg-cyan-400 shadow-[0_0_20px_rgb(34,211,238)] z-20"
+                  className="absolute left-0 w-full h-1 bg-[#cfb36e] shadow-[0_0_20px_rgba(207,179,110,0.8)] z-20"
                 />
               )}
             </AnimatePresence>
@@ -460,8 +616,11 @@ export default function Home() {
           variants={scrollVariants}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">Challenges We <span className="text-cyan-400">Faced</span></h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">Overcoming technical hurdles to build a robust safety enforcement system.</p>
+          <span className="text-[#cfb36e] font-mono text-[10px] tracking-[0.3em] uppercase mb-4 block opacity-70">
+            [ 05 • TECHNICAL HURDLES ]
+          </span>
+          <h2 className="text-4xl md:text-5xl font-black mb-4 text-white uppercase tracking-tighter">Project <span className="text-[#cfb36e]">Challenges</span></h2>
+          <p className="text-gray-400 max-w-2xl mx-auto font-light">Overcoming engineering obstacles to build a robust safety enforcement engine.</p>
         </motion.div>
 
         <motion.div
@@ -498,8 +657,10 @@ export default function Home() {
             variants={scrollVariants}
             className="text-center mb-20"
           >
-            <p className="text-cyan-400 font-mono text-xs tracking-widest uppercase mb-4">From Idea to Implementation</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-white">Project <span className="bg-gradient-to-r from-blue-400 to-cyan-500 text-transparent bg-clip-text">Journey</span></h2>
+            <span className="text-[#cfb36e] font-mono text-[10px] tracking-[0.3em] uppercase mb-4 block opacity-70">
+              [ 06 • PROJECT JOURNEY ]
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter">Development <span className="text-[#cfb36e]">Timeline</span></h2>
           </motion.div>
 
           <div className="relative overflow-x-auto pb-12 hide-scrollbar">
@@ -559,7 +720,7 @@ export default function Home() {
       </section>
 
       {/* SYSTEM IN ACTION / DEPLOYMENT */}
-      <section id="action" className="py-24 px-6 relative z-10 w-full bg-[#0a0a0a]/50 border-t border-gray-800">
+      <section id="action" className="py-24 px-6 relative z-10 w-full bg-card/50 border-t border-border">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial="hidden"
@@ -568,8 +729,11 @@ export default function Home() {
             variants={scrollVariants}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">System in <span className="bg-gradient-to-r from-green-400 to-cyan-500 text-transparent bg-clip-text">Action</span></h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">Real-world deployments scanning road tracking metrics across Indian highways and city junctions.</p>
+            <span className="text-[#cfb36e] font-mono text-[10px] tracking-[0.3em] uppercase mb-4 block opacity-70">
+              [ 07 • FIELD DEPLOYMENTS ]
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black mb-4 text-white uppercase tracking-tighter">System <span className="text-[#cfb36e]">Operational</span></h2>
+            <p className="text-gray-400 max-w-2xl mx-auto font-light">Real-world active monitoring across critical Indian infrastructure mapping safety metrics.</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -581,9 +745,9 @@ export default function Home() {
                 <div className="absolute bottom-6 left-6 right-6 pointer-events-none">
                   <div className="flex items-center space-x-2 mb-2">
                     <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.8)]" />
-                    <span className="text-xs font-mono text-green-400 tracking-widest drop-shadow-md">LIVE • CAMERA 0{i}</span>
+                    <span className="text-xs font-mono text-green-500 tracking-widest drop-shadow-md">LIVE • CAMERA 0{i}</span>
                   </div>
-                  <h3 className="text-white font-bold text-lg drop-shadow-md">Indian City Junction 0{i}</h3>
+                  <h3 className="text-foreground font-bold text-lg drop-shadow-md">Indian City Junction 0{i}</h3>
                 </div>
               </motion.div>
             ))}
@@ -600,8 +764,11 @@ export default function Home() {
             viewport={{ once: true }}
             variants={fadeInUp}
           >
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6">The <span className="text-cyan-400">AI Advantage</span></h2>
-            <p className="text-gray-400 text-lg">See how IndianRoad AI transforms traditional monitoring into an automated enforcement engine.</p>
+            <span className="text-[#cfb36e] font-mono text-[10px] tracking-[0.3em] uppercase mb-4 block opacity-70">
+              [ 08 • SYSTEM ADVANTAGE ]
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-foreground mb-6 uppercase tracking-tighter">The <span className="text-cyan-500">AI Shift</span></h2>
+            <p className="text-muted text-lg font-light">Transforming primitive manual monitoring into an automated safety enforcement machine.</p>
           </motion.div>
         </div>
 
@@ -649,8 +816,11 @@ export default function Home() {
       {/* SYSTEM ARCHITECTURE SECTION */}
       <section className="py-24 px-6 relative z-10 max-w-7xl mx-auto w-full">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-white">How the <span className="text-cyan-400">Engine</span> Works</h2>
-          <p className="text-gray-500 mt-2 tracking-wide font-mono text-sm uppercase">Cloud-Edge Hybrid Enforcement Pipeline</p>
+          <span className="text-[#cfb36e] font-mono text-[10px] tracking-[0.3em] uppercase mb-4 block opacity-70">
+            [ 09 • HYBRID ARCHITECTURE ]
+          </span>
+          <h2 className="text-4xl font-black text-white uppercase tracking-tighter">Engine <span className="text-[#cfb36e]">Architecture</span></h2>
+          <p className="text-gray-500 mt-2 tracking-wide font-mono text-xs uppercase">Cloud-Edge Hybrid Enforcement Pipeline</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -678,6 +848,46 @@ export default function Home() {
         </div>
       </section>
 
+      {/* TECHNICAL SPECS FOOTER */}
+      <footer className="py-20 px-6 relative z-10 border-t border-white/5 bg-[#050505]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-2xl font-black text-white mb-4">Technical <span className="text-cyan-500">Specifications</span></h2>
+              <p className="text-gray-500 text-sm max-w-md leading-relaxed">
+                The RoadGuard AI system utilizes a multi-layer detection architecture optimized for low-power edge devices and high-speed data transmission.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-4 md:justify-end">
+              <div className="px-6 py-4 rounded-2xl bg-white/5 border border-white/10 shadow-xl flex items-center space-x-4">
+                <Cpu className="w-6 h-6 text-cyan-400" />
+                <div>
+                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Model</p>
+                  <p className="text-white font-mono text-sm">YOLOv8 Engine</p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 rounded-2xl bg-white/5 border border-white/10 shadow-xl flex items-center space-x-4">
+                <Zap className="w-6 h-6 text-green-400" />
+                <div>
+                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Network</p>
+                  <p className="text-white font-mono text-sm">5G-Ready</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-gray-600 text-[10px] font-mono tracking-widest uppercase">
+            <p>&copy; 2026 ROADGUARD AI • ALL SYSTEMS OPERATIONAL</p>
+            <div className="flex space-x-8 mt-4 md:mt-0">
+              <span className="hover:text-cyan-500 cursor-pointer transition-colors">Documentation</span>
+              <span className="hover:text-cyan-500 cursor-pointer transition-colors">Privacy Cloud</span>
+              <span className="hover:text-cyan-500 cursor-pointer transition-colors">System Logs</span>
+            </div>
+          </div>
+        </div>
+      </footer>
     </main>
 
   );
