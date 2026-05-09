@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Camera, AlertTriangle, CheckCircle, Clock, Zap, Target, Activity, RefreshCcw, History, ShieldAlert } from "lucide-react";
+import { Camera, AlertTriangle, CheckCircle, Clock, Zap, Target, Activity, RefreshCcw, History, ShieldAlert, Trash2 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { useRouter } from "next/navigation";
-import { collection, getDocs, query, onSnapshot } from "firebase/firestore";
+import { collection, getDocs, query, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 import { db, auth } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -25,6 +25,7 @@ export default function DashboardPage() {
   const [metrics, setMetrics] = useState({ latency: 0, accuracy: 0, total: 0 });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
   const [detections, setDetections] = useState<any[]>([]);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -83,6 +84,28 @@ export default function DashboardPage() {
     setTimeout(() => setIsRefreshing(false), 500);
   };
 
+  const deleteAllViolations = async () => {
+    if (!window.confirm("Are you sure you want to delete ALL violation records? This action cannot be undone.")) return;
+    
+    setIsDeleting(true);
+    try {
+      const q = query(collection(db, "violations"));
+      const querySnapshot = await getDocs(q);
+      
+      const deletePromises = querySnapshot.docs.map(document => 
+        deleteDoc(doc(db, "violations", document.id))
+      );
+      
+      await Promise.all(deletePromises);
+      console.log("All violations deleted.");
+    } catch (error) {
+      console.error("Error deleting violations: ", error);
+      alert("Failed to delete violations.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -110,9 +133,9 @@ export default function DashboardPage() {
       const ctx = canvas.getContext("2d");
       if (!ctx || video.videoWidth === 0) return;
 
-      // Optimize: 640px is the native resolution for YOLO, making it 4x faster than 720p
+      // Optimize: 640px width, 360px height to maintain 16:9 aspect ratio (matching 1280x720)
       canvas.width = 640;
-      canvas.height = 480;
+      canvas.height = 360;
       
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const imageBase64 = canvas.toDataURL("image/jpeg", 0.5); // Fast compression
@@ -271,7 +294,7 @@ export default function DashboardPage() {
                 {/* SVG Overlay for detections */}
                 <svg
                   className="absolute inset-0 w-full h-full pointer-events-none"
-                  viewBox="0 0 1280 720"
+                  viewBox="0 0 640 360"
                   preserveAspectRatio="xMidYMid slice"
                 >
                   {detections.map((det, idx) => (
@@ -341,14 +364,24 @@ export default function DashboardPage() {
                 <AlertTriangle className="w-5 h-5 text-orange-500 mr-2 drop-shadow-[0_0_5px_rgb(249,115,22)]" />
                 Recent Violations
               </h2>
-              <button 
-                onClick={fetchViolations}
-                disabled={isRefreshing}
-                className="p-1.5 text-gray-400 hover:text-cyan-400 transition-colors hover:bg-cyan-500/10 rounded-md focus:outline-none"
-                aria-label="Refresh Data"
-              >
-                <RefreshCcw className={`w-4 h-4 ${isRefreshing ? "animate-spin text-cyan-400" : ""}`} />
-              </button>
+              <div className="flex space-x-2">
+                <button 
+                  onClick={deleteAllViolations}
+                  disabled={isDeleting || violations.length === 0}
+                  className="p-1.5 text-gray-400 hover:text-red-500 transition-colors hover:bg-red-500/10 rounded-md focus:outline-none disabled:opacity-50"
+                  title="Delete All Violations"
+                >
+                  <Trash2 className={`w-4 h-4 ${isDeleting ? "animate-pulse text-red-500" : ""}`} />
+                </button>
+                <button 
+                  onClick={fetchViolations}
+                  disabled={isRefreshing}
+                  className="p-1.5 text-gray-400 hover:text-cyan-400 transition-colors hover:bg-cyan-500/10 rounded-md focus:outline-none"
+                  aria-label="Refresh Data"
+                >
+                  <RefreshCcw className={`w-4 h-4 ${isRefreshing ? "animate-spin text-cyan-400" : ""}`} />
+                </button>
+              </div>
             </div>
             
             <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">

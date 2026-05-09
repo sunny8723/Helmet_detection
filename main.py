@@ -85,10 +85,16 @@ def extract_plate_text(plate_img):
 
         ocr = reader.readtext(gray)
         if ocr:
-            text = ocr[0][1]
-            if re.match(r'^[A-Z0-9]+$', text):
-                return text
-    except:
+            # Combine all detected text parts
+            full_text = " ".join([result[1] for result in ocr])
+            # Clean text by keeping only alphanumeric chars (converted to uppercase)
+            clean_text = re.sub(r'[^A-Z0-9]', '', full_text.upper())
+            
+            # Basic validation to ensure we got something meaningful (e.g. at least 4 chars)
+            if len(clean_text) >= 4:
+                return clean_text
+    except Exception as e:
+        print(f"DEBUG: OCR Error: {e}")
         pass
     return "UNKNOWN"
 
@@ -183,36 +189,39 @@ def process_single_frame(frame):
         # 🚨 NO HELMET CONDITION (Lowered to 0.4 for testing)
         if label in ["Face and Hair", "Face and Hairs", "no-helmet"] and conf > 0.4:
             violation_detected = True
-            violation_conf = conf
-            rider_crop = frame[y1:y2, x1:x2]
+            violation_conf = max(violation_conf, conf)
 
-            # ---------------- PLATE DETECTION ----------------
-            if rider_crop.size > 0:
-                s_plate = time.time()
-                plate_results = plate_model(rider_crop, verbose=False)[0]
-                t_plate = (time.time() - s_plate) * 1000
+    # ---------------- PLATE DETECTION ----------------
+    # Run plate detection on the FULL frame instead of just the head crop
+    if violation_detected:
+        s_plate = time.time()
+        plate_results = plate_model(frame, verbose=False)[0]
+        t_plate = (time.time() - s_plate) * 1000
 
-                for pbox in plate_results.boxes:
-                    px1, py1, px2, py2 = map(int, pbox.xyxy[0])
-                    plate_crop = rider_crop[py1:py2, px1:px2]
+        for pbox in plate_results.boxes:
+            px1, py1, px2, py2 = map(int, pbox.xyxy[0])
+            plate_crop = frame[py1:py2, px1:px2]
 
-                    if plate_crop.size > 0:
-                        # OCR (Only run if violation is confirmed to save time)
-                        s_ocr = time.time()
-                        plate_number = extract_plate_text(plate_crop)
-                        t_ocr = (time.time() - s_ocr) * 1000
-                        
-                        detections.append({
-                            "label": "Number Plate",
-                            "conf": float(pbox.conf[0]),
-                            "box": [x1+px1, y1+py1, x1+px2, y1+py2],
-                            "plate": plate_number
-                        })
+            if plate_crop.size > 0:
+                # OCR (Only run if violation is confirmed to save time)
+                s_ocr = time.time()
+                current_plate = extract_plate_text(plate_crop)
+                t_ocr += (time.time() - s_ocr) * 1000
+                
+                if current_plate != "UNKNOWN":
+                    plate_number = current_plate
 
-                        cv2.putText(annotated, plate_number,
-                                    (x1, y2+30),
-                                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                                    (0,0,255), 2)
+                detections.append({
+                    "label": "Number Plate",
+                    "conf": float(pbox.conf[0]),
+                    "box": [px1, py1, px2, py2],
+                    "plate": current_plate
+                })
+
+                cv2.putText(annotated, current_plate,
+                            (px1, py2+30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                            (0,0,255), 2)
     
     total_t = (time.time() - start_all) * 1000
     print(f"⚡ Speed: {total_t:.1f}ms (Helmet: {t_helmet:.1f}ms | Plate: {t_plate:.1f}ms | OCR: {t_ocr:.1f}ms)")

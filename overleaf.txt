@@ -1,0 +1,915 @@
+\documentclass[12pt,a4paper]{report}
+
+% ---------------- PACKAGES ---------------- %
+\usepackage{amsmath,amssymb}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{titling}
+\usepackage{xcolor}
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\scriptsize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+\usepackage{tocloft}
+\usepackage{float}
+\usepackage{microtype}
+\usepackage{ragged2e}
+\geometry{margin=1in}
+\setstretch{1.3}
+\justifying
+
+% Load hyperref LAST
+\usepackage[hidelinks]{hyperref}
+
+% ---------------- FORMATTING ---------------- %
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\centering}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titleformat{\section}{\large\bfseries}{\thesection.}{1em}{}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\makeatletter
+\renewcommand{\bibname}{References} % change bibliography title
+\makeatother
+
+\begin{document}
+
+% --------------------------------------------------
+% TITLE PAGE
+% --------------------------------------------------
+
+\begin{titlepage}
+\centering
+\vspace*{-1cm}
+{\textbf{A PROJECT REPORT}}\\[0.3cm]
+{\textbf{on}}\\[0.3cm]
+{\large\textbf{``AI-Driven Smart Helmet and Number Plate Detection System for Traffic Violation''}}\\[1cm]
+\textit{\textbf{Submitted in partial fulfilment of the requirement for the award of}}\\[0.3cm]
+\textbf{Degree of}\\[0.3cm]
+\textbf{BACHELOR OF TECHNOLOGY}\\[0.3cm]
+\textbf{in}\\[0.3cm]
+\textbf{DEPARTMENT OF ELECTRONICS AND COMMUNICATION ENGINEERING}\\[0.5cm]
+\includegraphics[width=3cm]{NERIST_LOGO.png}\\[0.5cm]
+\textbf{Submitted By:}\\[0.3cm]
+Sunny Das [D/22/EC/106]\\
+Sachin Kumar [D/22/EC/113]\\
+Laimayum Bedajit Sharma [D/22/EC/114]\\[0.4cm]
+\textbf{Under the Supervision of:}\\[0.2cm]
+\textbf{Dr. Tripurari Sharan}\\
+(Professor)\\
+Department of Electronics and Communication Engineering\\[0.6cm]
+\textbf{Session: 2025--26}\\[0.3cm]
+\textbf{Department of Electronics and Communication Engineering}\\
+\textbf{North Eastern Regional Institute of Science and Technology}\\
+(Deemed to be University, MoE, Govt. of India)\\
+\textbf{Nirjuli (Itanagar) :: Arunachal Pradesh -- 791109}
+\vfill
+\end{titlepage}
+
+% --------------------------------------------------
+% ACKNOWLEDGEMENT
+% --------------------------------------------------
+\newpage
+\chapter*{Acknowledgement}
+\addcontentsline{toc}{chapter}{Acknowledgement}
+
+We would like to express our sincere gratitude to our project supervisor, 
+\textbf{Dr. Tripurari Sharan}, Professor, Department of Electronics and Communication Engineering, 
+for his invaluable guidance, continuous encouragement, and insightful suggestions throughout the course of this project. 
+His support and mentorship played a crucial role in the successful completion of our work.
+
+We also extend our sincere thanks to \textbf{Dr. Ram Gopal}, Associate Professor and Project Coordinator, 
+Department of Electronics and Communication Engineering, NERIST, for his guidance, support, and coordination 
+throughout the project duration.
+
+We would like to express our heartfelt gratitude to \textbf{Dr. Salil Kashyap} (Associate Professor) and 
+\textbf{Dr. Chayan Bhawal} (Assistant Professor), Department of Electronics and Electrical Engineering, 
+IIT Guwahati, for introducing and inspiring the core idea of the helmet detection system. 
+Their valuable insights, guidance, and encouragement played a significant role in shaping the direction of this project 
+and deepening our understanding of practical applications in the field of electronics and communication.
+
+We also extend our sincere thanks to \textbf{Aditya Gupta} and \textbf{Yash Varshney} for their constant support, 
+motivation, and assistance at every stage of our project work. Their guidance and friendly cooperation were truly 
+valuable during the development of this project.
+
+We are also thankful to the faculty members of the Department of Electronics and Communication Engineering, 
+North Eastern Regional Institute of Science and Technology (NERIST), for providing us with the necessary resources, 
+technical knowledge, and a conducive environment for learning and innovation.
+
+We extend our heartfelt appreciation to our friends and peers for their constant support, constructive feedback, 
+and motivation during the development of this project.
+
+Finally, we would like to thank our families for their unwavering support, patience, and encouragement, 
+which helped us stay focused and complete this project successfully.
+
+% --------------------------------------------------
+% ABSTRACT
+% --------------------------------------------------
+\newpage
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+Road safety continues to be a major concern worldwide, especially in countries like India where the number of two-wheelers on the road has risen sharply in recent years. With this increase, the frequency of motorcycle-related accidents has also grown, often intensified by the low rate of helmet usage among riders. Although helmets are known to significantly reduce the chances of severe head injuries, many riders either ignore or intentionally violate helmet regulations. Relying solely on manual enforcement makes it difficult for traffic authorities to monitor such violations consistently, particularly in busy urban areas where vehicle movement is dense and continuous.
+
+This project aims to develop an AI-Driven Smart Helmet and Number Plate Detection System that operates on real-time video input. The system uses deep learning–based object detection (specifically YOLOv8) to determine whether a motorcyclist is wearing a helmet, and then extracts the corresponding number plate for further processing using Optical Character Recognition (OCR). The ultimate goal is to create an automated and reliable framework that can assist traffic enforcement teams in identifying violations quickly, maintaining digital records, and improving road safety compliance. Through this report, we detail the system architecture, methodology, implementation, and preliminary evaluation results of our proposed autonomous enforcement system.
+
+% --------------------------------------------------
+% TABLE OF CONTENTS & LIST OF FIGURES
+% --------------------------------------------------
+\newpage
+\begin{center}
+\textbf{\LARGE Table of Contents}
+\end{center}
+\vspace{1cm}
+\tableofcontents
+
+\newpage
+\listoffigures
+\addcontentsline{toc}{chapter}{List of Figures}
+
+
+% --------------------------------------------------
+% CHAPTER 1
+% --------------------------------------------------
+\chapter{Introduction}
+
+\section{Background \& Motivation}
+Road safety continues to be a major concern worldwide, especially in countries like India where the number of two-wheelers on the road has risen sharply in recent years\cite{motorcyclesdata2025}. With this increase, the frequency of motorcycle-related accidents has also grown, often intensified by the low rate of helmet usage among riders\cite{nextias2025}. Although helmets are known to significantly reduce the chances of severe head injuries, many riders either ignore or intentionally violate helmet regulations\cite{who2023}. Relying solely on manual enforcement makes it difficult for traffic authorities to monitor such violations consistently, particularly in busy urban areas where vehicle movement is dense and continuous.
+
+\section{Problem Statement}
+Current manual traffic enforcement mechanisms are highly inefficient, error-prone, and incapable of maintaining 24/7 surveillance across widespread urban areas. Furthermore, the evasion of standard checkpoints by violators creates a significant gap in enforcing helmet compliance, thereby increasing fatal accident rates.
+
+\section{Objective}
+The primary objective of this project is to develop an autonomous traffic enforcement system capable of:
+\begin{itemize}
+    \item Detecting motorcycle riders in real-time.
+    \item Classifying whether the rider is wearing a helmet or not.
+    \item Isolating the vehicle's license plate if a violation is detected.
+    \item Extracting the license plate number via Optical Character Recognition (OCR).
+    \item Automatically logging the violation evidence to a secure cloud database for generating automated E-Challans.
+\end{itemize}
+
+\section{Scope of the Project}
+This project covers the end-to-end development of the RoadGuard AI framework. It includes data collection, deep learning model training (using YOLOv8), backend API development (Flask/Python), real-time camera stream processing, cloud database integration (Firebase), and the foundation for a frontend command-center dashboard (Next.js).
+
+
+% --------------------------------------------------
+% CHAPTER 2
+% --------------------------------------------------
+\chapter{Literature Review}
+
+\section{Computer Vision in Traffic Systems}
+Over the last decade, researchers have explored various techniques to automate the detection of traffic violations, particularly helmet non-compliance among two-wheeler riders. Early efforts in this domain relied heavily on classical computer vision methods\cite{dahiya2016, vishnu2017}. These systems typically used hand-crafted feature extractors such as Local Binary Patterns (LBP) and Histogram of Oriented Gradients (HOG) to identify the presence or absence of helmets. While these approaches worked reasonably well in controlled settings, their performance declined under real-world conditions involving crowded roads, inconsistent illumination, and complex backgrounds.
+
+The introduction of deep learning marked a significant shift in the accuracy and reliability of vision-based detection systems. Convolutional Neural Networks (CNNs) enabled the automatic extraction of discriminative features from images, outperforming traditional methods and reducing the need for manual feature engineering\cite{raj2018}. 
+
+\section{YOLO Object Detection}
+With the advent of advanced object detection models—particularly those belonging to the YOLO and Faster R-CNN families—the capability to perform real-time, multi-class detection improved substantially. Research using YOLOv2, YOLOv3, and later YOLOv4 and YOLOv8 showed that these architectures could simultaneously detect riders, helmets, and additional traffic-related objects with high accuracy and low latency\cite{chairat2020, charran2022, deshpande2025}. 
+
+\section{Face and Number Plate Algorithms}
+Efforts in Automatic Number Plate Recognition (ANPR) have also evolved in parallel. Modern detection models combined with OCR technologies have been used to extract alphanumeric details from license plates under diverse lighting and angle conditions\cite{afzal2021, kathane2023}. Tools like EasyOCR and Tesseract have improved the reliability of text extraction, even from plates that are partially tilted or captured at lower resolutions.
+
+\section{Modern Edge Computing Architecture}
+Despite these advancements, several challenges remain, especially when targeting Indian traffic environments. Variations in vehicle types, inconsistent number plate formats, occlusions caused by congested roads, and fluctuating weather conditions can all affect detection accuracy. The present project builds on these developments by using a YOLO-based detection approach optimized for identifying both helmets and number plates in real-time video feeds\cite{yolov8}. 
+
+
+% --------------------------------------------------
+% CHAPTER 3
+% --------------------------------------------------
+\chapter{System Architecture}
+
+\section{Methodology}
+The development of the AI-Driven Smart Helmet and Number Plate Detection System follows a rigorous, data-centric workflow designed to achieve high accuracy and real-time inference capabilities. Instead of relying on generic pre-trained weights, the core detection module is fundamentally built upon the state-of-the-art YOLOv8 architecture provided by the Ultralytics framework. To tailor the system for specific Indian traffic conditions, a domain-specific dataset of two-wheeler riders was systematically compiled from diverse sources and meticulously annotated. The neural network architecture was then custom-trained on this dataset using high-performance GPU environments via Google Colab. This ensures the final generated model is highly optimized for recognizing riders, helmets, and license plates under varying real-world conditions.
+
+\section{System Architecture}
+Based on the \textbf{RoadGuard AI} documentation, the system leverages cutting-edge computer vision to monitor road safety in real-time, focusing on helmet compliance and automated violation processing.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{ImageVideo_Input.jpg}
+    \caption{System Architecture Diagram}
+\end{figure}
+
+The architecture ensures that live video feeds are processed at high speed. Violations are seamlessly synced to Firebase Firestore within milliseconds, and evidence snapshots are securely stored in Firebase Storage.
+
+\section{Component Description}
+\textbf{Software Tools:}
+\begin{itemize}
+    \item \textbf{Python:} Primary language for developing and integrating modules.
+    \item \textbf{Ultralytics YOLOv8:} For deep learning detection models.
+    \item \textbf{OpenCV:} For image preprocessing, bounding boxes, and video frame extraction.
+    \item \textbf{EasyOCR:} Integrated for extracting alphanumeric information from plates.
+    \item \textbf{Firebase:} Used for cloud database storage and violation logging.
+\end{itemize}
+
+\section{Algorithm}
+The system operates on the following algorithmic pipeline:
+\begin{enumerate}
+    \item Capture the live video frame from the camera stream.
+    \item Execute the custom-trained YOLOv8 model (\texttt{helmet\_best.pt}) to accurately classify and localize Rider, Helmet, and No-Helmet entities.
+    \item If a "No-Helmet" class is detected with a confidence threshold $> 0.4$, trigger the violation flag.
+    \item Pass the corresponding cropped region of interest (the rider) to the secondary custom-trained YOLOv8 model (\texttt{numberplate\_best.pt}) to efficiently isolate the license plate.
+    \item Crop the license plate region and apply morphological transformations, including grayscale conversion and Gaussian Blur.
+    \item Pass the enhanced cropped region to EasyOCR for alphanumeric text extraction.
+    \item Validate the OCR output and securely upload the violation metadata (including evidence snapshots) to the Firebase cloud ecosystem.
+\end{enumerate}
+
+\section{Flowchart}
+The logic dictates that OCR is only processed if a violation is detected, thereby saving significant computational resources and allowing the system to run at a high FPS.
+
+\section{Hardware Setup}
+Currently, the system is designed to run on a \textbf{GPU-Enabled Personal Laptop} acting as the main computational edge device, which is capable of capturing webcam feeds and processing inference in real-time.
+
+
+% --------------------------------------------------
+% CHAPTER 4
+% --------------------------------------------------
+\chapter{Implementation \& Result}
+
+\section{Implementation \& Custom Model Training}
+The project was systematically executed through the following core phases:
+\begin{itemize}
+    \item \textbf{Dataset Aggregation \& Curation:} A robust, domain-specific dataset comprising over 650 diverse images of motorcycles in varying traffic environments, lighting conditions, and angles was curated to ensure the model's adaptability.
+    \item \textbf{Data Annotation \& Preprocessing:} The compiled raw images were subjected to rigorous manual annotation using the Roboflow platform. Each frame was carefully labeled to establish accurate ground-truth bounding boxes for three primary classes: Rider, Helmet, and License Plate.
+    \item \textbf{Custom Model Training (YOLOv8 Architecture):} Utilizing the YOLOv8 architecture as the foundational framework, a custom deep learning model was trained using a high-compute GPU instance on Google Colab. The network iteratively learned feature representations specific to the annotated dataset, eventually producing highly accurate, custom weight files (\texttt{helmet\_best.pt} and \texttt{numberplate\_best.pt}) tailored for our precise use case, rather than relying on standard off-the-shelf pre-trained weights.
+    \item \textbf{Backend Integration \& Enforcement Pipeline:} The custom-trained inference models were deployed within a robust Python backend using Flask. This API continuously ingests video frames, runs the trained models for real-time prediction, executes EasyOCR on isolated license plates, and seamlessly synchronizes violation data with a Firebase cloud database.
+\end{itemize}
+
+\section{Code Explanation}
+The primary processing logic resides in the `process_single_frame()` function within our backend Python script. The script takes an OpenCV frame, runs the initial helmet detection, and conditionally executes the number plate recognition and OCR if a violator is detected. It computes execution latency and overlays bounding boxes and FPS statistics on the outgoing frame buffer.
+
+\section{Modules Description}
+\begin{itemize}
+    \item \textbf{Real-Time Autonomous Detection:} Processes live video feeds at up to 60 FPS using YOLOv8. It simultaneously monitors for ``Helmet'' and ``No Helmet'' classes while identifying vehicle license plates.
+    \item \textbf{Automated License Plate Recognition (ALPR):} Extracts alphanumeric characters using \textbf{EasyOCR}. It employs Region of Interest (ROI) mapping to isolate license plates for maximum text recognition accuracy.
+    \item \textbf{Smart E-Challan Pipeline:} An intelligent 5-second cooldown prevents duplicate tickets for the same vehicle in a congested stream.
+\end{itemize}
+
+\section{Graphs and Screenshots}
+
+The following figures illustrate the real-time inference capabilities and training visualisations of our system:
+
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}[b]{0.8\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{OW1.png}
+        \caption{Real-time inference on sample video frame showing rider detection bounding boxes.}
+        \label{fig:ow1}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+    
+    \begin{subfigure}[b]{0.8\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{OW2.png}
+        \caption{Training progress visualization in Google Colab displaying dataset samples and model learning.}
+        \label{fig:ow2}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+    
+    \begin{subfigure}[b]{0.8\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{OW3.png}
+        \caption{Helmet detection predictions across multiple diverse test images in real-world scenarios.}
+        \label{fig:ow3}
+    \end{subfigure}
+    \caption{Screenshots of Implementation Results}
+    \label{fig:ongoing_work}
+\end{figure}
+
+The core detection is powered by \textbf{YOLOv8n (Nano)}, optimized for edge deployment speed. 
+\begin{itemize}
+    \item \textbf{Input Resolution:} 640 $\times$ 640 pixels
+    \item \textbf{Mean Average Precision (mAP50):} 75.96\% (Average across all classes)
+    \item \textbf{Helmet-Specific Accuracy:} 90.7\% (Class-specific mAP50)
+    \item \textbf{Inference Speed:} $\sim$8.55 FPS on standard CPU hardware with an average latency of 117.02 ms.
+\end{itemize}
+
+% --------------------------------------------------
+% CHAPTER 5
+% --------------------------------------------------
+\chapter{Conclusion and Future Scope}
+
+\section{Summary of Achievement}
+The integrated detection framework processes video feeds instantaneously, successfully identifying violators who are not wearing helmets and reading their license plates with high confidence. The automated upload of evidence to Firebase proves that an autonomous E-Challan pipeline is highly feasible.
+
+\section{Limitations}
+\begin{itemize}
+    \item \textbf{Lighting Variation:} While improved through augmentation, extreme low-light conditions can still affect OCR accuracy.
+    \item \textbf{Plate Angles:} Sharply skewed number plates occasionally result in OCR read errors despite deskewing efforts.
+    \item \textbf{Object Occlusion:} Heavy traffic congestion can obscure license plates.
+\end{itemize}
+
+\section{Future Scope}
+\begin{itemize}
+    \item Field testing with CCTV/live streams in real urban intersections.
+    \item Optimization for edge compute devices (Raspberry Pi/NVIDIA Jetson Nano) to reduce hardware costs.
+    \item Implementing vehicle classification to distinguish between motorcycles, cars, and heavy vehicles.
+    \item Estimating vehicle speed using frame-to-frame pixel distance.
+\end{itemize}
+
+\section{Conclusion}
+This project successfully demonstrates the application of AI and Deep Learning in creating an automated, reliable framework for traffic enforcement. By combining YOLOv8 for object detection with EasyOCR, the system significantly reduces the need for manual surveillance. Overall, the developed system is functioning effectively under controlled testing, with active improvements underway to ensure robust deployment in real-world Indian traffic environments.
+
+
+
+
+\clearpage
+\chapter*{Appendix A: Source Code}
+\addcontentsline{toc}{chapter}{Appendix A: Source Code}
+
+The following is the primary backend script (\texttt{main.py}) that handles video processing, object detection, OCR, and Firebase integration.
+
+\begin{lstlisting}[language=Python]
+import cv2
+from ultralytics import YOLO
+import easyocr
+import time
+import os
+from datetime import datetime
+import threading
+import re
+import firebase_admin
+from firebase_admin import credentials, firestore, storage
+from flask import Flask, Response, request, jsonify
+from flask_cors import CORS
+import base64
+import numpy as np
+
+# -------------------- BASE DIRECTORY --------------------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# -------------------- FIREBASE SETUP --------------------
+try:
+    cred_path = os.path.join(BASE_DIR, 'service_key.json')
+    cred = credentials.Certificate(cred_path)
+    firebase_admin.initialize_app(cred, {
+        'storageBucket': 'helmet-detection-7e07f.appspot.com'
+    })
+    db = firestore.client()
+    bucket = storage.bucket()
+    print(f"✅ Firebase initialized (Bucket: {bucket.name})")
+except Exception as e:
+    print("❌ Firebase Error:", e)
+    db = None
+
+# -------------------- FOLDERS --------------------
+os.makedirs(os.path.join(BASE_DIR, "violation_images"), exist_ok=True)
+
+# -------------------- LOAD MODELS --------------------
+helmet_model_path = os.path.join(BASE_DIR, 'helmet_best.pt')
+plate_model_path = os.path.join(BASE_DIR, 'numberplate_best.pt')
+
+helmet_model = YOLO(helmet_model_path)
+plate_model = YOLO(plate_model_path)
+
+# -------------------- OCR --------------------
+reader = easyocr.Reader(['en'])
+
+# -------------------- FLASK --------------------
+app = Flask(__name__)
+CORS(app)
+
+# -------------------- GLOBAL STATE --------------------
+latest_frame = None
+frame_lock = threading.Lock()
+last_upload_time = 0
+UPLOAD_COOLDOWN = 5
+
+# -------------------- UTILS --------------------
+print(f"DEBUG: Helmet Model Classes: {helmet_model.names}")
+print(f"DEBUG: Plate Model Classes: {plate_model.names}")
+
+def base64_to_cv2(b64_string):
+    try:
+        if not b64_string:
+            return None
+        if ';base64,' in b64_string:
+            _, imgstr = b64_string.split(';base64,')
+        else:
+            imgstr = b64_string
+        data = base64.b64decode(imgstr)
+        np_arr = np.frombuffer(data, np.uint8)
+        img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+        if img is not None:
+             return img
+        return None
+    except Exception as e:
+        print(f"DEBUG: Error decoding base64: {e}")
+        return None
+
+# -------------------- OCR FUNCTION --------------------
+def extract_plate_text(plate_img):
+    try:
+        plate_img = cv2.resize(plate_img, None, fx=2, fy=2)
+        gray = cv2.cvtColor(plate_img, cv2.COLOR_BGR2GRAY)
+        gray = cv2.GaussianBlur(gray, (5,5), 0)
+
+        ocr = reader.readtext(gray)
+        if ocr:
+            full_text = " ".join([result[1] for result in ocr])
+            clean_text = re.sub(r'[^A-Z0-9]', '', full_text.upper())
+            
+            if len(clean_text) >= 4:
+                return clean_text
+    except Exception as e:
+        pass
+    return "UNKNOWN"
+
+# -------------------- FIREBASE UPLOAD --------------------
+def upload_to_firebase(file_path, data):
+    if not db:
+        return
+    
+    try:
+        blob = bucket.blob(os.path.basename(file_path))
+        blob.upload_from_filename(file_path)
+        blob.make_public()
+        data["image"] = blob.public_url
+        print("✅ Image uploaded to Storage")
+    except Exception as e:
+        print(f"⚠️ Storage Skip: {e}")
+        data["image"] = ""
+
+    try:
+        db.collection("violations").add(data)
+        print("✅ Violation data added to Firestore")
+    except Exception as e:
+        print("❌ Firestore Error:", e)
+
+# -------------------- VIOLATION HANDLING --------------------
+def handle_violation(frame, violation_detected, plate_number, latency_ms=0, confidence=0.9):
+    global last_upload_time
+    if violation_detected:
+        current_time = time.time()
+        if current_time - last_upload_time > UPLOAD_COOLDOWN:
+            last_upload_time = current_time
+
+            filename = f"violation_images/violator_{int(current_time)}.jpg"
+            abs_filename = os.path.join(BASE_DIR, filename)
+            cv2.imwrite(abs_filename, frame)
+
+            data = {
+                "plate": plate_number,
+                "time": str(datetime.now().isoformat()),
+                "latency": latency_ms / 1000.0,
+                "confidence": confidence,
+                "violation": "No Helmet"
+            }
+
+            threading.Thread(
+                target=upload_to_firebase,
+                args=(abs_filename, data)
+            ).start()
+            print(f"🚨 Violation Uploaded: {plate_number}")
+            return True
+    return False
+
+# -------------------- DETECTION CORE --------------------
+def process_single_frame(frame):
+    annotated = frame.copy()
+    
+    start_all = time.time()
+    helmet_results = helmet_model(frame, verbose=False)[0]
+    t_helmet = (time.time() - start_all) * 1000
+
+    violation_detected = False
+    violation_conf = 0
+    plate_number = "UNKNOWN"
+    detections = []
+    t_plate = 0
+    t_ocr = 0
+
+    for box in helmet_results.boxes:
+        cls = int(box.cls[0])
+        label = helmet_model.names[cls]
+        conf = float(box.conf[0])
+        x1, y1, x2, y2 = map(int, box.xyxy[0])
+
+        if conf > 0.4:
+            detections.append({
+                "label": label,
+                "conf": conf,
+                "box": [x1, y1, x2, y2]
+            })
+
+        if label in ["Face and Hair", "Face and Hairs", "no-helmet"] and conf > 0.4:
+            violation_detected = True
+            violation_conf = max(violation_conf, conf)
+
+    if violation_detected:
+        s_plate = time.time()
+        plate_results = plate_model(frame, verbose=False)[0]
+        t_plate = (time.time() - s_plate) * 1000
+
+        for pbox in plate_results.boxes:
+            px1, py1, px2, py2 = map(int, pbox.xyxy[0])
+            plate_crop = frame[py1:py2, px1:px2]
+
+            if plate_crop.size > 0:
+                s_ocr = time.time()
+                current_plate = extract_plate_text(plate_crop)
+                t_ocr += (time.time() - s_ocr) * 1000
+                
+                if current_plate != "UNKNOWN":
+                    plate_number = current_plate
+
+                detections.append({
+                    "label": "Number Plate",
+                    "conf": float(pbox.conf[0]),
+                    "box": [px1, py1, px2, py2],
+                    "plate": current_plate
+                })
+
+                cv2.putText(annotated, current_plate,
+                            (px1, py2+30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                            (0,0,255), 2)
+    
+    total_t = (time.time() - start_all) * 1000
+    print(f"⚡ Speed: {total_t:.1f}ms")
+
+    return annotated, detections, violation_detected, plate_number, total_t, violation_conf
+
+def generate_frames():
+    while True:
+        with frame_lock:
+            if latest_frame is None:
+                time.sleep(0.1)
+                continue
+            
+            ret, buffer = cv2.imencode('.jpg', latest_frame)
+            if not ret:
+                continue
+            
+        frame_bytes = buffer.tobytes()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+        
+        time.sleep(0.03)
+
+@app.route('/video_feed')
+def video_feed():
+    return Response(generate_frames(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/detect', methods=['POST'])
+def detect_api():
+    try:
+        data = request.json
+        image_b64 = data.get('image')
+        if not image_b64:
+            return jsonify({"error": "No image provided"}), 400
+
+        frame = base64_to_cv2(image_b64)
+        if frame is None:
+            return jsonify({"error": "Invalid image format"}), 400
+
+        _, detections, violation_detected, plate_number, latency, conf = process_single_frame(frame)
+        handle_violation(frame, violation_detected, plate_number, latency, conf)
+        
+        return jsonify({
+            "detections": detections,
+            "violation": violation_detected,
+            "plate": plate_number,
+            "timestamp": datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == "__main__":
+    print("🚀 RoadGuard AI Backend Running on port 5000...")
+    app.run(host="0.0.0.0", port=5000, threaded=True, use_reloader=False)
+\end{lstlisting}
+
+\clearpage
+\chapter*{Appendix B: Helmet Detection Training Script}
+\addcontentsline{toc}{chapter}{Appendix B: Helmet Detection Training Script}
+
+The following is the Google Colab notebook script (\texttt{helmet\_detection.py}) used for downloading the datasets, training the YOLOv8 models for both helmet and license plate detection, and exporting the trained weights.
+
+\begin{lstlisting}[language=Python]
+# -*- coding: utf-8 -*-
+"""helmet_detection.ipynb
+
+Automatically generated by Colab.
+
+Original file is located at
+    https://colab.research.google.com/drive/1V1XyDpwOh7w2eFgDAobeAoGp67eAsOCL
+"""
+
+from google.colab import drive
+drive.mount('/content/drive')
+
+zip_path = "/content/drive/MyDrive/helmet_project/Helmet - No helmet detection.v1.yolov8.zip"
+
+import os
+
+print(os.listdir('/content/drive/MyDrive'))
+
+import zipfile
+
+zip_path = "/content/drive/MyDrive/helmet_project/Helmet - No helmet detection.v1i.yolov8.zip"
+extract_path = "/content/helmet_dataset"
+
+with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+    zip_ref.extractall(extract_path)
+
+import os
+
+print(os.listdir('/content/helmet_dataset'))
+
+import os
+
+print(os.listdir('/content/helmet_dataset/train'))
+
+!pip install ultralytics
+
+from ultralytics import YOLO
+
+model = YOLO('yolov8n.pt')
+
+model.train(
+    data='/content/helmet_dataset/data.yaml',
+    epochs=50,
+    imgsz=640
+)
+
+import zipfile
+import os
+
+zip_path = "/content/drive/MyDrive/helmet_project/Indian License Plate.v1-v1.yolov8.zip"
+extract_path = "/content/numberplate_dataset"
+
+with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+    zip_ref.extractall(extract_path)
+
+print("Dataset extracted!")
+
+import yaml
+
+yaml_path = "/content/numberplate_dataset/data.yaml"
+
+with open(yaml_path, 'r') as f:
+    data = yaml.safe_load(f)
+
+data['train'] = '/content/numberplate_dataset/train/images'
+data['val'] = '/content/numberplate_dataset/valid/images'
+data['test'] = '/content/numberplate_dataset/test/images'
+
+with open(yaml_path, 'w') as f:
+    yaml.dump(data, f)
+
+print("YAML file updated!")
+
+!cat /content/numberplate_dataset/data.yaml
+
+from ultralytics import YOLO
+
+model = YOLO('yolov8s.pt')   # recommended for better accuracy
+
+model.train(
+    data='/content/numberplate_dataset/data.yaml',
+    epochs=50,
+    imgsz=640,
+    batch=16,
+    name='numberplate_model'
+)
+
+model = YOLO('/content/runs/detect/numberplate_model/weights/best.pt')
+
+results = model('/content/numberplate_dataset/test/images', save=True)
+
+import os
+
+train_path = "/content/numberplate_dataset/train/images"
+val_path = "/content/numberplate_dataset/valid/images"
+test_path = "/content/numberplate_dataset/test/images"
+
+train_count = len(os.listdir(train_path))
+val_count = len(os.listdir(val_path))
+test_count = len(os.listdir(test_path))
+
+print("Train Images:", train_count)
+print("Validation Images:", val_count)
+print("Test Images:", test_count)
+
+print("Total Images:", train_count + val_count + test_count)
+
+from google.colab import files
+uploaded = files.upload()
+
+import os
+
+print(os.listdir('runs/detect'))
+
+from ultralytics import YOLO
+import cv2
+from google.colab.patches import cv2_imshow
+
+# Correct paths
+helmet_model = YOLO('runs/detect/train/weights/best.pt')
+plate_model = YOLO('runs/detect/numberplate_model/weights/best.pt')
+
+frame = cv2.imread('test1.png')  # fix extension also
+
+helmet_results = helmet_model(frame)[0]
+plate_results = plate_model(frame)[0]
+
+cv2_imshow(frame)
+
+from ultralytics import YOLO
+import cv2
+from google.colab.patches import cv2_imshow
+
+# Correct paths
+helmet_model = YOLO('runs/detect/train/weights/best.pt')
+plate_model = YOLO('runs/detect/numberplate_model/weights/best.pt')
+
+frame = cv2.imread('test2.png')  # fix extension also
+
+helmet_results = helmet_model(frame)[0]
+plate_results = plate_model(frame)[0]
+
+cv2_imshow(frame)
+
+from ultralytics import YOLO
+import cv2
+from google.colab.patches import cv2_imshow
+
+# Correct paths
+helmet_model = YOLO('runs/detect/train/weights/best.pt')
+plate_model = YOLO('runs/detect/numberplate_model/weights/best.pt')
+
+frame = cv2.imread('test3.png')  # fix extension also
+
+helmet_results = helmet_model(frame)[0]
+plate_results = plate_model(frame)[0]
+
+cv2_imshow(frame)
+
+!pip install easyocr
+
+from ultralytics import YOLO
+import cv2
+from google.colab.patches import cv2_imshow
+import easyocr
+
+# Load models
+helmet_model = YOLO('runs/detect/train/weights/best.pt')
+plate_model = YOLO('runs/detect/numberplate_model/weights/best.pt')
+
+# OCR
+reader = easyocr.Reader(['en'])
+
+# Load image
+frame = cv2.imread('test4.png')
+
+helmet_results = helmet_model(frame)[0]
+
+for box in helmet_results.boxes:
+    x1, y1, x2, y2 = map(int, box.xyxy[0])
+    cls = int(box.cls[0])
+    label = helmet_model.names[cls]
+
+    # Draw helmet box
+    cv2.rectangle(frame, (x1,y1), (x2,y2), (0,255,0), 2)
+    cv2.putText(frame, label, (x1,y1-10),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)
+
+    # -------- IF NO HELMET --------
+    if label == "Face and Hairs":   # FIXED
+
+        rider_crop = frame[y1:y2, x1:x2]
+
+        plate_results = plate_model(rider_crop)[0]
+
+        for pbox in plate_results.boxes:
+            px1, py1, px2, py2 = map(int, pbox.xyxy[0])
+
+            plate_crop = rider_crop[py1:py2, px1:px2]
+
+            # Improve OCR accuracy
+            plate_crop = cv2.resize(plate_crop, None, fx=2, fy=2)
+            gray = cv2.cvtColor(plate_crop, cv2.COLOR_BGR2GRAY)
+
+            # Draw plate box
+            cv2.rectangle(frame,
+                          (x1+px1, y1+py1),
+                          (x1+px2, y1+py2),
+                          (0,0,255), 2)
+
+            # -------- OCR --------
+            ocr_result = reader.readtext(gray)
+
+            for res in ocr_result:
+                text = res[1]
+
+                print("Plate:", text)
+
+                cv2.putText(frame, text, (x1, y2+30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,0,255), 2)
+
+# Show final output
+cv2_imshow(frame)
+
+from ultralytics import YOLO
+import cv2
+from google.colab.patches import cv2_imshow
+
+# Correct paths
+helmet_model = YOLO('runs/detect/train/weights/best.pt')
+plate_model = YOLO('runs/detect/numberplate_model/weights/best.pt')
+
+frame = cv2.imread('test4.png')  # fix extension also
+
+helmet_results = helmet_model(frame)[0]
+plate_results = plate_model(frame)[0]
+
+cv2_imshow(frame)
+
+!cp runs/detect/train/weights/best.pt helmet_best.pt
+!cp runs/detect/numberplate_model/weights/best.pt numberplate_best.pt
+
+from google.colab import files
+
+files.download('helmet_best.pt')
+files.download('numberplate_best.pt')
+\end{lstlisting}
+
+\clearpage
+% --------------------------------------------------
+% CHAPTER 6
+% --------------------------------------------------
+\chapter{References}
+
+\begin{thebibliography}{14}
+
+\bibitem{deshpande2025}
+U.~U.~Deshpande \textit{et al.}, ``Computer-vision based automatic rider helmet violation detection and vehicle identification in Indian smart city scenarios using NVIDIA TAO toolkit and YOLOv8,'' \textit{Frontiers in Artificial Intelligence}, vol.~8, 2025. doi: \href{https://doi.org/10.3389/frai.2025.1582257}{10.3389/frai.2025.1582257}.
+
+\bibitem{who2023}
+World Health Organization, ``Road traffic injuries,'' WHO Fact Sheets, 2023. Available: \href{https://www.who.int/news-room/fact-sheets/detail/road-traffic-injuries}{https://www.who.int/news-room/fact-sheets/detail/road-traffic-injuries}. Accessed: Nov. 25, 2025.
+
+\bibitem{dahiya2016}
+N.~Dahiya, A.~Gupta, and S.~Singh, ``Automatic detection of helmet on motorcyclists using image processing techniques,'' \textit{Int. J. Comput. Appl.}, vol.~139, no.~10, 2016.
+
+\bibitem{vishnu2017}
+K.~Vishnu, M.~Kumar, and P.~Singh, ``Helmet detection for rider safety using image processing and machine learning,'' in \textit{Proc. IEEE Int. Conf. Intelligent Transportation}, 2017.
+
+\bibitem{raj2018}
+S.~Raj, A.~Dubey, and R.~Gupta, ``Deep learning-based helmet detection for motorcyclist safety,'' \textit{Int. J. Comput. Vis. Image Process.}, vol.~8, no.~2, 2018.
+
+\bibitem{chairat2020}
+N.~Chairat, S.~Srisuk, and T.~Kraisak, ``Low-cost helmet detection system using YOLOv2,'' in \textit{Proc. IEEE TENCON}, 2020.
+
+\bibitem{charran2022}
+M.~Charran, P.~Mahadeo, and K.~Hosein, ``Deep learning-based motorcycle traffic violation detection using YOLOv4,'' \textit{IEEE Access}, vol.~10, 2022.
+
+\bibitem{said2024}
+Y.~Said \textit{et al.}, ``AI-based helmet violation detection for traffic management system,'' \textit{Comput. Modeling Eng. Sci.}, vol.~141, no.~1, 2024.
+
+\bibitem{afzal2021}
+M.~Afzal, N.~Tariq, and S.~Ahmad, ``License plate detection and recognition using deep CNNs,'' \textit{IEEE Access}, vol.~9, 2021.
+
+\bibitem{kathane2023}
+R.~Kathane, P.~Sharma, and A.~Patel, ``Real-time helmet and license plate detection using YOLOv3 and OpenCV,'' \textit{Procedia Comput. Sci.}, vol.~218, 2023.
+
+\bibitem{roboflow2024}
+Roboflow Universe Project, ``License plate recognition dataset,'' 2024. Available: \href{https://universe.roboflow.com/roboflow-universe-projects/license-plate-recognition-rxg4e}{\texttt{https://universe.roboflow.com/roboflow-universe-projects/license-plate-recognition-rxg4e}}.
+
+\bibitem{yolov8}
+Ultralytics, ``YOLOv8 documentation,'' 2024. Available: \href{https://yolov8.com}{\texttt{https://yolov8.com}}.
+
+\bibitem{nextias2025}
+NEXT IAS, ``Road Accidents in India 2023 Report,'' \textit{Current Affairs}, Aug. 30, 2025. [Online]. Available: \url{https://www.nextias.com/ca/current-affairs/30-08-2025/road-accidents-in-india-2023-report}. [Accessed: Nov. 25, 2025].
+
+\bibitem{motorcyclesdata2025}
+MotorcyclesData, ``Indian Motorcycles Market – Facts \& Data 2025,'' Nov. 10, 2025. [Online]. Available: \url{https://www.motorcyclesdata.com/2025/11/10/indian-motorcycles-market/}. [Accessed: Nov. 25, 2025].
+
+\end{thebibliography}
+
+\end{document}

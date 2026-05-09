@@ -32,6 +32,8 @@ import os
 
 print(os.listdir('/content/helmet_dataset/train'))
 
+!pip install ultralytics
+
 from ultralytics import YOLO
 
 model = YOLO('yolov8n.pt')
@@ -42,200 +44,203 @@ model.train(
     imgsz=640
 )
 
-import os
-
-print(os.listdir('/content/runs/detect'))
-
-import os
-
-print(os.listdir('/content/runs/detect/helmet_yolov8n_fixed/weights'))
-
-import os
-
-folders = os.listdir('/content/runs/detect')
-
-for f in folders:
-    path = f'/content/runs/detect/{f}/weights'
-    if os.path.exists(path):
-        print(f, "→", os.listdir(path))
-
-from ultralytics import YOLO
-
-model = YOLO('/content/runs/detect/train2/weights/best.pt')
-
-model.predict(
-    source='/content/helmet_dataset/test/images',
-    save=True
-)
-
-from ultralytics import YOLO
-
-# Load the trained model
-model = YOLO('/content/runs/detect/train2/weights/best.pt')
-
-# Validate the model
-metrics = model.val(
-    data='/content/helmet_dataset/data.yaml',
-    imgsz=640
-)
-
-# Print evaluation metrics
-print("mAP50-95:", metrics.box.map)
-print("mAP50:", metrics.box.map50)
-print("mAP75:", metrics.box.map75)
-print("Precision:", metrics.box.p)
-print("Recall:", metrics.box.r)
-
-import glob
-from IPython.display import Image, display
-
-imgs = glob.glob('/content/runs/detect/predict/*.jpg')[:5]
-
-for img in imgs:
-    display(Image(filename=img))
-
-!pip install opencv-python
-
-from IPython.display import display, Javascript
-from google.colab.output import eval_js
-import cv2
-import numpy as np
-from base64 import b64decode
-
-def take_photo(filename='photo.jpg', quality=0.8):
-    js = Javascript('''
-        async function takePhoto(quality) {
-            const div = document.createElement('div');
-            const capture = document.createElement('button');
-            capture.textContent = 'Capture';
-            div.appendChild(capture);
-
-            const video = document.createElement('video');
-            video.style.display = 'block';
-            const stream = await navigator.mediaDevices.getUserMedia({video: true});
-
-            document.body.appendChild(div);
-            div.appendChild(video);
-            video.srcObject = stream;
-            await video.play();
-
-            google.colab.output.setIframeHeight(document.documentElement.scrollHeight, true);
-
-            await new Promise((resolve) => capture.onclick = resolve);
-
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-
-            stream.getTracks().forEach(track => track.stop());
-            div.remove();
-
-            return canvas.toDataURL('image/jpeg', quality);
-        }
-    ''')
-    display(js)
-    data = eval_js('takePhoto({})'.format(quality))
-    binary = b64decode(data.split(',')[1])
-
-    with open(filename, 'wb') as f:
-        f.write(binary)
-
-    return filename
-
-from ultralytics import YOLO
-
-model = YOLO('/content/runs/detect/train2/weights/best.pt')
-
-from google.colab import files
-files.download('/content/runs/detect/train2/weights/best.pt')
-
-import os
-
-train_imgs = len(os.listdir('/content/helmet_dataset/train/images'))
-val_imgs = len(os.listdir('/content/helmet_dataset/valid/images'))
-test_imgs = len(os.listdir('/content/helmet_dataset/test/images'))
-
-print("Train:", train_imgs)
-print("Validation:", val_imgs)
-print("Test:", test_imgs)
-
 import zipfile
+import os
 
 zip_path = "/content/drive/MyDrive/helmet_project/Indian License Plate.v1-v1.yolov8.zip"
-extract_path = "/content/plate_dataset"
+extract_path = "/content/numberplate_dataset"
 
 with zipfile.ZipFile(zip_path, 'r') as zip_ref:
     zip_ref.extractall(extract_path)
 
-import os
+print("Dataset extracted!")
 
-print(os.listdir('/content/plate_dataset'))
+import yaml
+
+yaml_path = "/content/numberplate_dataset/data.yaml"
+
+with open(yaml_path, 'r') as f:
+    data = yaml.safe_load(f)
+
+data['train'] = '/content/numberplate_dataset/train/images'
+data['val'] = '/content/numberplate_dataset/valid/images'
+data['test'] = '/content/numberplate_dataset/test/images'
+
+with open(yaml_path, 'w') as f:
+    yaml.dump(data, f)
+
+print("YAML file updated!")
+
+!cat /content/numberplate_dataset/data.yaml
 
 from ultralytics import YOLO
 
-model = YOLO('yolov8n.pt')
+model = YOLO('yolov8s.pt')   # recommended for better accuracy
 
 model.train(
-    data='/content/plate_dataset/data.yaml',
+    data='/content/numberplate_dataset/data.yaml',
     epochs=50,
-    imgsz=640
+    imgsz=640,
+    batch=16,
+    name='numberplate_model'
 )
 
-import glob
+model = YOLO('/content/runs/detect/numberplate_model/weights/best.pt')
 
-paths = glob.glob('/content/runs/detect/*/weights/best.pt')
-
-for p in paths:
-    print(p)
-
-from ultralytics import YOLO
-
-model = YOLO('/content/runs/detect/helmet_yolov8n/weights/best.pt')
+results = model('/content/numberplate_dataset/test/images', save=True)
 
 import os
-print(os.path.exists('/content/runs/detect/helmet_yolov8n/weights/best.pt'))
+
+train_path = "/content/numberplate_dataset/train/images"
+val_path = "/content/numberplate_dataset/valid/images"
+test_path = "/content/numberplate_dataset/test/images"
+
+train_count = len(os.listdir(train_path))
+val_count = len(os.listdir(val_path))
+test_count = len(os.listdir(test_path))
+
+print("Train Images:", train_count)
+print("Validation Images:", val_count)
+print("Test Images:", test_count)
+
+print("Total Images:", train_count + val_count + test_count)
 
 from google.colab import files
-files.download('/content/runs/detect/helmet_yolov8n/weights/best.pt')
-
-data='/content/plate_dataset/data.yaml'
+uploaded = files.upload()
 
 import os
 
-train = len(os.listdir('/content/helmet_dataset/train/images'))
-val = len(os.listdir('/content/helmet_dataset/valid/images'))
-test = len(os.listdir('/content/helmet_dataset/test/images'))
+print(os.listdir('runs/detect'))
 
-print("Train:", train)
-print("Validation:", val)
-print("Test:", test)
-print("Total:", train + val + test)
+from ultralytics import YOLO
+import cv2
+from google.colab.patches import cv2_imshow
 
-import csv
-from datetime import datetime
+# Correct paths
+helmet_model = YOLO('runs/detect/train/weights/best.pt')
+plate_model = YOLO('runs/detect/numberplate_model/weights/best.pt')
 
-import os
+frame = cv2.imread('test1.png')  # fix extension also
 
-import csv
+helmet_results = helmet_model(frame)[0]
+plate_results = plate_model(frame)[0]
 
-import os
-import csv
+cv2_imshow(frame)
 
-file_name = "plate_data.csv"
+from ultralytics import YOLO
+import cv2
+from google.colab.patches import cv2_imshow
 
-if not os.path.exists(file_name):
-    with open(file_name, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(["Plate Number", "Time", "Image"])
+# Correct paths
+helmet_model = YOLO('runs/detect/train/weights/best.pt')
+plate_model = YOLO('runs/detect/numberplate_model/weights/best.pt')
 
-import os
-import csv
-from datetime import datetime
+frame = cv2.imread('test2.png')  # fix extension also
 
-file_name = "plate_data.csv"
+helmet_results = helmet_model(frame)[0]
+plate_results = plate_model(frame)[0]
 
-if not os.path.exists(file_name):
-    with open(file_name, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(["Plate Number", "Time", "Image"])
+cv2_imshow(frame)
+
+from ultralytics import YOLO
+import cv2
+from google.colab.patches import cv2_imshow
+
+# Correct paths
+helmet_model = YOLO('runs/detect/train/weights/best.pt')
+plate_model = YOLO('runs/detect/numberplate_model/weights/best.pt')
+
+frame = cv2.imread('test3.png')  # fix extension also
+
+helmet_results = helmet_model(frame)[0]
+plate_results = plate_model(frame)[0]
+
+cv2_imshow(frame)
+
+!pip install easyocr
+
+from ultralytics import YOLO
+import cv2
+from google.colab.patches import cv2_imshow
+import easyocr
+
+# Load models
+helmet_model = YOLO('runs/detect/train/weights/best.pt')
+plate_model = YOLO('runs/detect/numberplate_model/weights/best.pt')
+
+# OCR
+reader = easyocr.Reader(['en'])
+
+# Load image
+frame = cv2.imread('test4.png')
+
+helmet_results = helmet_model(frame)[0]
+
+for box in helmet_results.boxes:
+    x1, y1, x2, y2 = map(int, box.xyxy[0])
+    cls = int(box.cls[0])
+    label = helmet_model.names[cls]
+
+    # Draw helmet box
+    cv2.rectangle(frame, (x1,y1), (x2,y2), (0,255,0), 2)
+    cv2.putText(frame, label, (x1,y1-10),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)
+
+    # -------- IF NO HELMET --------
+    if label == "Face and Hairs":   # FIXED
+
+        rider_crop = frame[y1:y2, x1:x2]
+
+        plate_results = plate_model(rider_crop)[0]
+
+        for pbox in plate_results.boxes:
+            px1, py1, px2, py2 = map(int, pbox.xyxy[0])
+
+            plate_crop = rider_crop[py1:py2, px1:px2]
+
+            # 🔥 Improve OCR accuracy
+            plate_crop = cv2.resize(plate_crop, None, fx=2, fy=2)
+            gray = cv2.cvtColor(plate_crop, cv2.COLOR_BGR2GRAY)
+
+            # Draw plate box
+            cv2.rectangle(frame,
+                          (x1+px1, y1+py1),
+                          (x1+px2, y1+py2),
+                          (0,0,255), 2)
+
+            # -------- OCR --------
+            ocr_result = reader.readtext(gray)
+
+            for res in ocr_result:
+                text = res[1]
+
+                print("Plate:", text)
+
+                cv2.putText(frame, text, (x1, y2+30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,0,255), 2)
+
+# Show final output
+cv2_imshow(frame)
+
+from ultralytics import YOLO
+import cv2
+from google.colab.patches import cv2_imshow
+
+# Correct paths
+helmet_model = YOLO('runs/detect/train/weights/best.pt')
+plate_model = YOLO('runs/detect/numberplate_model/weights/best.pt')
+
+frame = cv2.imread('test4.png')  # fix extension also
+
+helmet_results = helmet_model(frame)[0]
+plate_results = plate_model(frame)[0]
+
+cv2_imshow(frame)
+
+!cp runs/detect/train/weights/best.pt helmet_best.pt
+!cp runs/detect/numberplate_model/weights/best.pt numberplate_best.pt
+
+from google.colab import files
+
+files.download('helmet_best.pt')
+files.download('numberplate_best.pt')
